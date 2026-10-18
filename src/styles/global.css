@@ -1,0 +1,88 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@layer base {
+  :root {
+    --bg-page: #FAF8F5;
+    --bg-surface: #FFFFFF;
+    --bg-surface-soft: #F2EFE9;
+    --text-primary: #1E2022;
+    --text-secondary: #5C6166;
+    --text-muted: #8A8F95;
+    --border-color: #E6E0D6;
+    --border-hover: #CFC7BA;
+    --accent: #A84A28;
+    --accent-hover: #8F3E21;
+    --accent-soft: rgba(168, 74, 40, 0.08);
+  }
+
+  .dark {
+    --bg-page: #151517;
+    --bg-surface: #1C1C1F;
+    --bg-surface-soft: #242429;
+    --text-primary: #EDEAE4;
+    --text-secondary: #A0A0A6;
+    --text-muted: #6E6E73;
+    --border-color: #2A2A2E;
+    --border-hover: #3E3E44;
+    --accent: #E27B55;
+    --accent-hover: #F08E69;
+    --accent-soft: rgba(226, 123, 85, 0.12);
+  }
+
+  html {
+    background-color: var(--bg-page);
+    color: var(--text-primary);
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
+    scroll-behavior: smooth;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Editorial Serif typography for headings & quotes */
+  .font-serif-heading {
+    font-family: "Charter", "Bitstream Charter", "Georgia", "Songti SC", "SimSun", serif;
+  }
+
+  /* Monospace for code elements */
+  .font-mono-code {
+    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+}
+
+/* Custom Scrollbar for magazine reading */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-hover);
+  border-radius: 3px;
+}
+
+/* Shiki Dual-theme dark/light code block handling */
+html.dark .astro-code,
+html.dark .astro-code span {
+  color: var(--shiki-dark) !important;
+  background-color: var(--shiki-dark-bg) !important;
+  font-style: var(--shiki-dark-font-style) !important;
+  font-weight: var(--shiki-dark-font-weight) !important;
+  text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
+pre.astro-code {
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-color);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  overflow-x: auto;
+}
