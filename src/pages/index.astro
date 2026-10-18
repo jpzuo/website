@@ -1,11 +1,81 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { ArrowRight, BookOpen, Calendar } from '@lucide/astro';
 
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+// Fetch recent posts
+const allPosts = await getCollection('blog', ({ data }) => {
+  return import.meta.env.PROD ? !data.draft : true;
+});
+const recentPosts = allPosts
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 10);
+
+const formatDate = (date: Date) => {
+  return new Intl.DateTimeFormat('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(date);
+};
 ---
 
 <Layout>
-	<Welcome />
+  <div>
+    <!-- Recent Blog Posts Section -->
+    <section class="pt-2">
+      <div class="flex items-baseline justify-between mb-8 pb-4 border-b border-[var(--border-color)]">
+        <div class="flex items-center gap-2">
+          <BookOpen class="w-5 h-5 text-[var(--accent)]" />
+          <h1 class="font-serif-heading text-xl sm:text-2xl font-bold text-[var(--text-primary)] tracking-tight">
+            最新手记与思考
+          </h1>
+        </div>
+        <a
+          href="/blog"
+          class="text-xs font-medium text-[var(--accent)] hover:underline inline-flex items-center gap-1 group"
+        >
+          <span>查看全部目录 ({allPosts.length})</span>
+          <ArrowRight class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+        </a>
+      </div>
+
+      <div class="divide-y divide-[var(--border-color)]">
+        {recentPosts.map((post) => (
+          <article class="py-6 first:pt-0 group">
+            <div class="flex items-center gap-3 text-xs mb-2 font-mono-code text-[var(--text-muted)]">
+              <span class="text-[var(--accent)] font-serif-heading font-medium bg-[var(--accent-soft)] px-2 py-0.5 rounded">
+                {post.data.category}
+              </span>
+              <span>·</span>
+              <time datetime={post.data.pubDate.toISOString()} class="flex items-center gap-1">
+                <Calendar class="w-3.5 h-3.5" />
+                {formatDate(post.data.pubDate)}
+              </time>
+            </div>
+
+            <h2 class="font-serif-heading text-lg sm:text-xl font-bold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
+              <a href={`/blog/${post.id}`}>
+                {post.data.title}
+              </a>
+            </h2>
+
+            <p class="mt-2 text-sm text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
+              {post.data.description}
+            </p>
+          </article>
+        ))}
+      </div>
+
+      <div class="pt-8 text-center border-t border-[var(--border-color)] mt-8">
+        <a
+          href="/blog"
+          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)] text-sm font-medium text-[var(--text-primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] hover:bg-[var(--bg-surface-soft)] transition-colors shadow-xs"
+        >
+          <span>浏览全部 {allPosts.length} 篇文章</span>
+          <ArrowRight class="w-4 h-4" />
+        </a>
+      </div>
+    </section>
+  </div>
 </Layout>

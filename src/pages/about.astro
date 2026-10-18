@@ -1,0 +1,212 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { User, Briefcase, GraduationCap, Wrench, Mail, MapPin, Compass } from '@lucide/astro';
+import Github from '../components/icons/Github.astro';
+
+const experiences = [
+  {
+    role: '资深全栈架构师 / Tech Lead',
+    company: '科技创新实验室',
+    period: '2023 — 至今',
+    description: '负责核心分布式任务调度平台与 AI 智能体执行环境的架构设计。推进模块化架构演进与研发效能基础设施建设。',
+  },
+  {
+    role: '高级全栈工程师',
+    company: '互联网科技公司',
+    period: '2020 — 2023',
+    description: '主导微服务架构拆分与前后端工程化升级，支撑千万级日活跃请求，保障 99.99% 的系统可用性。',
+  },
+  {
+    role: '软件工程师',
+    company: '数字化解决方案提供商',
+    period: '2018 — 2020',
+    description: '从事云原生后端服务与企业级数据看板研发，积累深厚的高并发缓存与数据库调优经验。',
+  },
+];
+
+const skillCategories = [
+  {
+    name: '语言与运行时',
+    skills: ['TypeScript / JavaScript', 'Go', 'Rust (探索中)', 'Python', 'Node.js'],
+  },
+  {
+    name: '架构与后端',
+    skills: ['分布式系统设计', 'gRPC / RESTful API', 'PostgreSQL / MySQL', 'Redis', 'Kafka / RabbitMQ'],
+  },
+  {
+    name: '前端与视觉',
+    skills: ['Astro', 'React / Next.js', 'Tailwind CSS', 'WebGL / Canvas', '响应式与排版设计'],
+  },
+  {
+    name: '基础设施与工具',
+    skills: ['Docker / K8s', 'Linux / Shell', 'Git / CI/CD Actions', 'Obsidian (PKM)', 'Vim / Neovim'],
+  },
+];
+
+const usesList = [
+  { category: '硬件装备', items: ['MacBook Pro 16" (M-Series)', '4K 27" 广色域显示器', 'HHKB / 客制化机械键盘', '罗技 MX Master 3S'] },
+  { category: '核心软件', items: ['Astro 7 (静态网站构建)', 'Obsidian (知识管理与卡片笔记)', 'VS Code / Cursor', 'Raycast / Warp 终端'] },
+];
+---
+
+<Layout
+  title="关于我 · 履历与技能树 · ZUO"
+  description="全栈工程师的个人经历、技术栈与工作装备清单。"
+>
+  <div class="space-y-14">
+    <!-- Header / Bio -->
+    <section class="pb-10 border-b border-[var(--border-color)]">
+      <div class="inline-flex items-center gap-2 text-xs font-serif-heading font-medium text-[var(--accent)] bg-[var(--accent-soft)] px-2.5 py-1 rounded-full mb-4">
+        <User class="w-3.5 h-3.5" />
+        <span>关于我 · Biography</span>
+      </div>
+
+      <h1 class="font-serif-heading text-3xl sm:text-4xl font-bold tracking-tight text-[var(--text-primary)]">
+        你好，我是 ZUO
+      </h1>
+
+      <p class="mt-4 text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed font-serif-heading">
+        一名追求极致工程品质与排版美学的全栈开发者。
+      </p>
+
+      <div class="mt-6 text-sm text-[var(--text-secondary)] leading-relaxed space-y-4">
+        <p>
+          热衷于探索分布式系统设计、高可用微服务治理、现代全栈开发以及知识管理哲学。我相信优雅的代码结构与考究的纸张排版具有相通的内在秩序感。
+        </p>
+        <p>
+          业余时间，我喜欢使用 <strong>Obsidian</strong> 沉淀思考，构建属于自己的第二大脑，并将打磨成熟的技术洞见与架构总结分享于独立博客中。
+        </p>
+      </div>
+
+      <!-- Quick Contact & Socials -->
+      <div class="mt-8 flex flex-wrap items-center gap-4 text-xs font-mono-code">
+        <span class="inline-flex items-center gap-1.5 text-[var(--text-muted)]">
+          <MapPin class="w-3.5 h-3.5" />
+          <span>中国 · 杭州 / 远程协同</span>
+        </span>
+        <a
+          href="mailto:contact@example.com"
+          class="inline-flex items-center gap-1.5 text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors"
+        >
+          <Mail class="w-3.5 h-3.5" />
+          <span>contact@example.com</span>
+        </a>
+        <a
+          href="https://github.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors"
+        >
+          <Github class="w-3.5 h-3.5" />
+          <span>GitHub</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- Experience Timeline -->
+    <section>
+      <div class="flex items-center gap-2 mb-6">
+        <Briefcase class="w-4 h-4 text-[var(--accent)]" />
+        <h2 class="font-serif-heading text-xl font-bold text-[var(--text-primary)]">
+          职业经历 (Experience)
+        </h2>
+      </div>
+
+      <div class="relative pl-6 border-l border-[var(--border-color)] space-y-8">
+        {experiences.map((exp) => (
+          <div class="relative group">
+            <span class="absolute -left-[31px] top-1.5 w-2.5 h-2.5 rounded-full bg-[var(--border-color)] group-hover:bg-[var(--accent)] transition-colors ring-4 ring-[var(--bg-page)]" />
+            <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+              <h3 class="font-serif-heading font-bold text-base text-[var(--text-primary)]">
+                {exp.role} · <span class="text-[var(--accent)]">{exp.company}</span>
+              </h3>
+              <span class="text-xs font-mono-code text-[var(--text-muted)]">
+                {exp.period}
+              </span>
+            </div>
+            <p class="mt-2 text-sm text-[var(--text-secondary)] leading-relaxed">
+              {exp.description}
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Education -->
+    <section>
+      <div class="flex items-center gap-2 mb-6">
+        <GraduationCap class="w-4 h-4 text-[var(--accent)]" />
+        <h2 class="font-serif-heading text-xl font-bold text-[var(--text-primary)]">
+          教育背景 (Education)
+        </h2>
+      </div>
+
+      <div class="p-5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)] flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+        <div>
+          <h3 class="font-serif-heading font-bold text-base text-[var(--text-primary)]">
+            计算机科学与技术 · 工学学士
+          </h3>
+          <p class="text-xs text-[var(--text-secondary)] mt-1">
+            主修数据结构与算法、计算机系统与网络、分布式计算与软件工程
+          </p>
+        </div>
+        <span class="text-xs font-mono-code text-[var(--text-muted)]">2014 — 2018</span>
+      </div>
+    </section>
+
+    <!-- Tech Stack Matrix -->
+    <section>
+      <div class="flex items-center gap-2 mb-6">
+        <Compass class="w-4 h-4 text-[var(--accent)]" />
+        <h2 class="font-serif-heading text-xl font-bold text-[var(--text-primary)]">
+          技能罗盘 (Tech Stack)
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {skillCategories.map((cat) => (
+          <div class="p-5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)]">
+            <h3 class="font-serif-heading font-bold text-sm text-[var(--text-primary)] mb-3">
+              {cat.name}
+            </h3>
+            <div class="flex flex-wrap gap-1.5">
+              {cat.skills.map((skill) => (
+                <span class="px-2.5 py-1 text-xs font-mono-code rounded bg-[var(--bg-surface-soft)] text-[var(--text-secondary)] border border-[var(--border-color)]/60">
+                  {skill}
+                </span>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- Uses / Setup -->
+    <section class="p-6 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface-soft)]">
+      <div class="flex items-center gap-2 mb-4">
+        <Wrench class="w-4 h-4 text-[var(--accent)]" />
+        <h2 class="font-serif-heading text-lg font-bold text-[var(--text-primary)]">
+          我的装备与生产力工具 (Uses)
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
+        {usesList.map((use) => (
+          <div>
+            <h3 class="font-semibold text-[var(--text-primary)] text-xs uppercase tracking-wider text-[var(--text-muted)] mb-2 font-mono-code">
+              {use.category}
+            </h3>
+            <ul class="space-y-1.5 text-[var(--text-secondary)]">
+              {use.items.map((item) => (
+                <li class="flex items-center gap-2">
+                  <span class="w-1.5 h-1.5 rounded-full bg-[var(--accent)]" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </section>
+  </div>
+</Layout>

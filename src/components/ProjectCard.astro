@@ -1,0 +1,101 @@
+---
+import { ArrowUpRight, Sparkles, Building, CodeXml } from '@lucide/astro';
+import Github from './icons/Github.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  type: 'commercial' | 'opensource' | 'experiment';
+  techStack: string[];
+  github?: string;
+  demo?: string;
+  featured?: boolean;
+}
+
+const { title, description, type, techStack, github, demo, featured } = Astro.props;
+
+const typeConfig = {
+  commercial: {
+    label: '上线 / 商业产品',
+    bg: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20',
+    icon: Building,
+  },
+  opensource: {
+    label: '开源工具',
+    bg: 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20',
+    icon: CodeXml,
+  },
+  experiment: {
+    label: '实验探索',
+    bg: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20',
+    icon: Sparkles,
+  },
+};
+
+const currentType = typeConfig[type] || typeConfig.opensource;
+const TypeIcon = currentType.icon;
+---
+
+<div class={`group relative p-6 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)] hover:border-[var(--accent)] hover:shadow-md transition-all duration-200 flex flex-col justify-between ${featured ? 'ring-1 ring-[var(--accent)]/30' : ''}`}>
+  <div>
+    <!-- Top Meta: Type badge & Featured tag -->
+    <div class="flex items-center justify-between gap-2 mb-3">
+      <span class={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border ${currentType.bg}`}>
+        <TypeIcon class="w-3.5 h-3.5" />
+        {currentType.label}
+      </span>
+      {featured && (
+        <span class="text-xs font-serif-heading font-medium text-[var(--accent)] bg-[var(--accent-soft)] px-2 py-0.5 rounded">
+          精选成果
+        </span>
+      )}
+    </div>
+
+    <!-- Title -->
+    <h3 class="font-serif-heading text-lg font-bold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors tracking-tight">
+      {title}
+    </h3>
+
+    <!-- Description -->
+    <p class="mt-2 text-sm text-[var(--text-secondary)] leading-relaxed line-clamp-3">
+      {description}
+    </p>
+  </div>
+
+  <div class="mt-5 pt-4 border-t border-[var(--border-color)]/70">
+    <!-- Tech stack pills -->
+    <div class="flex flex-wrap gap-1.5 mb-4">
+      {techStack.map((tech) => (
+        <span class="px-2 py-0.5 text-xs font-mono-code rounded bg-[var(--bg-surface-soft)] text-[var(--text-muted)] border border-[var(--border-color)]/50">
+          {tech}
+        </span>
+      ))}
+    </div>
+
+    <!-- Links -->
+    <div class="flex items-center gap-4 text-xs font-medium">
+      {demo && (
+        <a
+          href={demo}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1 text-[var(--accent)] hover:underline"
+        >
+          <span>在线体验</span>
+          <ArrowUpRight class="w-3.5 h-3.5" />
+        </a>
+      )}
+      {github && (
+        <a
+          href={github}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+        >
+          <Github class="w-3.5 h-3.5" />
+          <span>源码仓库</span>
+        </a>
+      )}
+    </div>
+  </div>
+</div>

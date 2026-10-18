@@ -1,0 +1,150 @@
+---
+import Layout from './Layout.astro';
+import { Calendar, Tag, ArrowLeft } from '@lucide/astro';
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  category: string;
+  tags: string[];
+  headings?: { depth: number; slug: string; text: string }[];
+}
+
+const { title, description, pubDate, updatedDate, category, tags, headings = [] } = Astro.props;
+
+const formattedDate = new Intl.DateTimeFormat('zh-CN', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}).format(pubDate);
+
+// Filter headings for TOC (h2 and h3)
+const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+
+<Layout title={`${title} · ZUO`} description={description}>
+  <div class="relative">
+    <!-- Back to blog navigation -->
+    <a
+      href="/blog"
+      class="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors mb-8 group"
+    >
+      <ArrowLeft class="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+      <span>返回文章目录</span>
+    </a>
+
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-12">
+      <!-- Article Main Column -->
+      <article class="lg:col-span-3">
+        <!-- Article Header -->
+        <header class="pb-8 border-b border-[var(--border-color)]">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="px-2.5 py-0.5 rounded text-xs font-serif-heading font-medium bg-[var(--accent-soft)] text-[var(--accent)]">
+              {category}
+            </span>
+            <div class="flex items-center gap-1.5 text-xs text-[var(--text-muted)]">
+              <Calendar class="w-3.5 h-3.5" />
+              <time datetime={pubDate.toISOString()}>{formattedDate}</time>
+              {updatedDate && (
+                <span class="text-[11px] font-mono-code opacity-80">
+                  (更新于 {new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'numeric', day: 'numeric' }).format(updatedDate)})
+                </span>
+              )}
+            </div>
+          </div>
+
+          <h1 class="font-serif-heading text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[var(--text-primary)] leading-[1.25]">
+            {title}
+          </h1>
+
+          <p class="mt-4 text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed font-serif-heading italic">
+            {description}
+          </p>
+
+          <!-- Tags list -->
+          {tags.length > 0 && (
+            <div class="flex flex-wrap items-center gap-2 mt-6">
+              {tags.map((tag) => (
+                <span class="inline-flex items-center gap-1 text-xs text-[var(--text-secondary)] bg-[var(--bg-surface-soft)] px-2.5 py-1 rounded-full border border-[var(--border-color)]/60 font-mono-code">
+                  <Tag class="w-3 h-3 text-[var(--text-muted)]" />
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </header>
+
+        <!-- Article Body -->
+        <div class="mt-8 prose dark:prose-invert prose-stone max-w-none prose-headings:font-serif-heading prose-headings:font-bold prose-headings:tracking-tight prose-a:text-[var(--accent)] prose-a:underline hover:prose-a:text-[var(--accent-hover)] prose-blockquote:border-l-[var(--accent)] prose-blockquote:font-serif-heading prose-blockquote:italic prose-pre:my-6 prose-pre:rounded-xl leading-relaxed">
+          <slot />
+        </div>
+
+        <!-- Article Footer & Copyright -->
+        <footer class="mt-14 pt-8 border-t border-[var(--border-color)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-[var(--text-muted)]">
+          <div>
+            <p>本文遵循知识共享许可协议（CC BY-NC-SA 4.0）</p>
+            <p class="mt-0.5">转载请注明原作者与出处链接。</p>
+          </div>
+          <a
+            href="/blog"
+            class="text-[var(--accent)] hover:underline font-medium inline-flex items-center gap-1"
+          >
+            ← 探索更多思考手记
+          </a>
+        </footer>
+      </article>
+
+      <!-- Sidebar / Table of Contents (TOC) -->
+      {tocHeadings.length > 0 && (
+        <aside class="hidden lg:block lg:col-span-1">
+          <div class="sticky top-24 p-4 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)]">
+            <h2 class="font-serif-heading text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-3">
+              文章目录
+            </h2>
+            <nav class="space-y-1.5 text-xs">
+              {tocHeadings.map((h) => (
+                <a
+                  href={`#${h.slug}`}
+                  class={`block text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors py-1 ${
+                    h.depth === 3 ? 'pl-3 text-[11px]' : 'font-medium'
+                  }`}
+                >
+                  {h.text}
+                </a>
+              ))}
+            </nav>
+          </div>
+        </aside>
+      )}
+    </div>
+  </div>
+
+  <!-- Client-side script to add copy buttons to code blocks -->
+  <script is:inline>
+    document.querySelectorAll('pre.astro-code').forEach((block) => {
+      // Wrapper for relative positioning
+      const wrapper = document.createElement('div');
+      wrapper.className = 'relative group my-4';
+      block.parentNode?.insertBefore(wrapper, block);
+      wrapper.appendChild(block);
+
+      const copyBtn = document.createElement('button');
+      copyBtn.className = 'absolute top-3 right-3 px-2 py-1 text-xs rounded bg-[var(--bg-surface-soft)] text-[var(--text-muted)] border border-[var(--border-color)] opacity-0 group-hover:opacity-100 transition-opacity hover:text-[var(--text-primary)] cursor-pointer';
+      copyBtn.innerHTML = '复制';
+      copyBtn.setAttribute('aria-label', '复制代码');
+
+      copyBtn.addEventListener('click', async () => {
+        const codeText = block.querySelector('code')?.innerText || block.innerText;
+        await navigator.clipboard.writeText(codeText);
+        copyBtn.innerHTML = '已复制!';
+        setTimeout(() => {
+          copyBtn.innerHTML = '复制';
+        }, 2000);
+      });
+
+      wrapper.appendChild(copyBtn);
+    });
+  </script>
+</Layout>

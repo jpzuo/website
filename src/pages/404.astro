@@ -1,0 +1,30 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { ArrowLeft, Compass } from '@lucide/astro';
+---
+
+<Layout title="404 · 页面未找到 · ZUO">
+  <div class="py-20 text-center space-y-6">
+    <div class="inline-flex items-center justify-center w-14 h-14 rounded-full bg-[var(--accent-soft)] text-[var(--accent)] mb-2">
+      <Compass class="w-7 h-7" />
+    </div>
+
+    <h1 class="font-serif-heading text-4xl sm:text-5xl font-bold tracking-tight text-[var(--text-primary)]">
+      404 · 迷失在数字纸页中
+    </h1>
+
+    <p class="text-base text-[var(--text-secondary)] max-w-md mx-auto leading-relaxed">
+      您所寻找的页面可能已经被重命名、归档或尚未撰写。不如返回首页，探索其他手记与作品。
+    </p>
+
+    <div class="pt-4">
+      <a
+        href="/"
+        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-medium text-sm transition-colors shadow-xs"
+      >
+        <ArrowLeft class="w-4 h-4" />
+        <span>返回网站首页</span>
+      </a>
+    </div>
+  </div>
+</Layout>

@@ -1,0 +1,44 @@
+---
+import { Rss } from '@lucide/astro';
+import Github from './icons/Github.astro';
+
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="mt-auto border-t border-[var(--border-color)] py-12 px-4 sm:px-6 transition-colors duration-200">
+  <div class="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6">
+    <div class="space-y-1 text-center sm:text-left">
+      <p class="font-serif-heading text-sm text-[var(--text-secondary)] italic">
+        "保持好奇，在数字纸张上沉淀工程与审美的交汇。"
+      </p>
+      <p class="text-xs text-[var(--text-muted)] font-mono-code">
+        &copy; {currentYear} ZUO. All rights reserved.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-5 text-sm text-[var(--text-secondary)]">
+      <a
+        href="/rss.xml"
+        class="flex items-center gap-1.5 hover:text-[var(--accent)] transition-colors"
+      >
+        <Rss class="w-4 h-4" />
+        <span>RSS</span>
+      </a>
+      <a
+        href="/sitemap-index.xml"
+        class="hover:text-[var(--accent)] transition-colors"
+      >
+        Sitemap
+      </a>
+      <a
+        href="https://github.com/jpzuo"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="flex items-center gap-1.5 hover:text-[var(--accent)] transition-colors"
+      >
+        <Github class="w-4 h-4" />
+        <span>GitHub</span>
+      </a>
+    </div>
+  </div>
+</footer>

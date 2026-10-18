@@ -1,0 +1,249 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+import { Calendar, ArrowRight, Layers, Tag as TagIcon } from '@lucide/astro';
+
+const allPosts = await getCollection('blog', ({ data }) => {
+  return import.meta.env.PROD ? !data.draft : true;
+});
+
+// Sort by pubDate descending
+const posts = allPosts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+// Collect categories with count
+const categoryMap = new Map<string, number>();
+posts.forEach((p) => {
+  const cat = p.data.category || '未分类';
+  categoryMap.set(cat, (categoryMap.get(cat) || 0) + 1);
+});
+const categories = Array.from(categoryMap.entries()).sort((a, b) => b[1] - a[1]);
+
+// Collect unique tags with count
+const tagMap = new Map<string, number>();
+posts.forEach((p) => {
+  p.data.tags.forEach((t) => {
+    if (t) tagMap.set(t, (tagMap.get(t) || 0) + 1);
+  });
+});
+const allTags = Array.from(tagMap.entries()).sort((a, b) => b[1] - a[1]);
+
+const formatDate = (date: Date) => {
+  return new Intl.DateTimeFormat('zh-CN', {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(date);
+};
+---
+
+<Layout
+  title="文章与思考手记 · ZUO"
+  description="记录全栈架构、系统设计、数字美学与知识管理领域的工程实践与思考手记。"
+  maxWidth="max-w-6xl"
+>
+  <!-- Two-Column Layout: Left Sticky Sidebar + Right Articles Stream -->
+  <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 items-start">
+      
+      <!-- Left Fixed / Sticky Sidebar -->
+      <aside class="md:col-span-4 lg:col-span-3 md:sticky md:top-24 md:max-h-[calc(100vh-7rem)] md:overflow-y-auto space-y-5 pr-1 scrollbar-none">
+        
+        <!-- Category Navigation Card -->
+        <div class="p-4 sm:p-5 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-surface)] shadow-xs">
+          <div class="flex items-center justify-between mb-3 px-1">
+            <div class="flex items-center gap-1.5 text-xs font-serif-heading font-semibold text-[var(--text-primary)]">
+              <Layers class="w-3.5 h-3.5 text-[var(--accent)]" />
+              <span>分类导航</span>
+            </div>
+            <span class="text-[11px] text-[var(--text-muted)] font-mono-code" id="filter-count">
+              共 {posts.length} 篇
+            </span>
+          </div>
+
+          <nav class="space-y-1" id="category-filter-group">
+            <button
+              data-filter-type="all"
+              data-filter-val="all"
+              class="filter-pill active-pill w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium cursor-pointer transition-all duration-150 border border-[var(--accent)] bg-[var(--accent)] text-white shadow-xs text-left"
+            >
+              <span>全部文章</span>
+              <span class="opacity-80 text-[11px] font-mono-code">({posts.length})</span>
+            </button>
+            {categories.map(([cat, count]) => (
+              <button
+                data-filter-type="category"
+                data-filter-val={cat}
+                class="filter-pill w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium cursor-pointer transition-all duration-150 border border-transparent hover:border-[var(--border-color)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-soft)] text-left"
+              >
+                <span>{cat}</span>
+                <span class="opacity-60 text-[11px] font-mono-code">({count})</span>
+              </button>
+            ))}
+          </nav>
+        </div>
+
+        <!-- Tag Cloud Card -->
+        {allTags.length > 0 && (
+          <div class="p-4 sm:p-5 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-surface)] shadow-xs">
+            <div class="flex items-center gap-1.5 text-xs text-[var(--text-primary)] font-serif-heading font-semibold mb-3 px-1">
+              <TagIcon class="w-3.5 h-3.5 text-[var(--accent)]" />
+              <span>标签过滤</span>
+            </div>
+            <div class="flex flex-wrap gap-1.5" id="tag-filter-group">
+              {allTags.map(([tag, count]) => (
+                <button
+                  data-filter-type="tag"
+                  data-filter-val={tag}
+                  class="filter-tag px-2.5 py-1 rounded-lg text-xs font-mono-code whitespace-nowrap cursor-pointer transition-all duration-150 border border-[var(--border-color)]/70 bg-[var(--bg-surface-soft)] text-[var(--text-secondary)] hover:text-[var(--accent)] hover:border-[var(--accent)]"
+                >
+                  #{tag} <span class="text-[10px] opacity-60">({count})</span>
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+      </aside>
+
+      <!-- Right Articles Stream -->
+      <div class="md:col-span-8 lg:col-span-9 min-w-0">
+        <div class="divide-y divide-[var(--border-color)]" id="posts-container">
+          {posts.map((post) => (
+            <article
+              class="post-item py-7 first:pt-1 group transition-colors duration-150"
+              data-category={post.data.category}
+              data-tags={JSON.stringify(post.data.tags)}
+            >
+              <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-2">
+                <div class="flex items-center gap-2.5">
+                  <span class="text-xs font-serif-heading font-medium text-[var(--accent)] bg-[var(--accent-soft)] px-2 py-0.5 rounded">
+                    {post.data.category}
+                  </span>
+                  <span class="text-xs text-[var(--text-muted)] flex items-center gap-1 font-mono-code">
+                    <Calendar class="w-3 h-3" />
+                    {formatDate(post.data.pubDate)}
+                  </span>
+                </div>
+                {post.data.featured && (
+                  <span class="text-[11px] font-serif-heading text-[var(--accent)] italic">
+                    ★ 精选
+                  </span>
+                )}
+              </div>
+
+              <h2 class="font-serif-heading text-xl sm:text-2xl font-bold tracking-tight text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors mt-2">
+                <a href={`/blog/${post.id}`} class="block">
+                  {post.data.title}
+                </a>
+              </h2>
+
+              <p class="mt-2.5 text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed line-clamp-2">
+                {post.data.description}
+              </p>
+
+              <div class="mt-4 flex items-center justify-between">
+                <div class="flex flex-wrap gap-1.5">
+                  {post.data.tags.map((tag) => (
+                    <span class="text-[11px] font-mono-code px-2 py-0.5 rounded bg-[var(--bg-surface-soft)] text-[var(--text-muted)] border border-[var(--border-color)]/50">
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+
+                <a
+                  href={`/blog/${post.id}`}
+                  class="inline-flex items-center gap-1 text-xs font-medium text-[var(--accent)] group-hover:translate-x-1 transition-transform"
+                >
+                  <span>阅读全文</span>
+                  <ArrowRight class="w-3.5 h-3.5" />
+                </a>
+              </div>
+            </article>
+          ))}
+
+          <!-- Empty state -->
+          <div id="empty-state" class="hidden py-16 text-center text-sm text-[var(--text-muted)]">
+            该分类或标签下暂无文章，尝试点击左侧其他筛选选项。
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  <!-- Interactive Filter Script -->
+  <script is:inline>
+    const categoryBtns = document.querySelectorAll('.filter-pill');
+    const tagBtns = document.querySelectorAll('.filter-tag');
+    const postItems = document.querySelectorAll('.post-item');
+    const emptyState = document.getElementById('empty-state');
+    const countDisplay = document.getElementById('filter-count');
+
+    let currentFilterType = 'all';
+    let currentFilterVal = 'all';
+
+    function resetButtons() {
+      categoryBtns.forEach((btn) => {
+        btn.classList.remove('bg-[var(--accent)]', 'text-white', 'border-[var(--accent)]', 'shadow-xs');
+        btn.classList.add('border-transparent', 'text-[var(--text-secondary)]');
+      });
+      tagBtns.forEach((btn) => {
+        btn.classList.remove('bg-[var(--accent)]', 'text-white', 'border-[var(--accent)]');
+        btn.classList.add('bg-[var(--bg-surface-soft)]', 'text-[var(--text-secondary)]', 'border-[var(--border-color)]/70');
+      });
+    }
+
+    function applyFilter() {
+      let visible = 0;
+      postItems.forEach((item) => {
+        const itemCat = item.getAttribute('data-category') || '';
+        const itemTags = JSON.parse(item.getAttribute('data-tags') || '[]');
+
+        let match = false;
+        if (currentFilterType === 'all') {
+          match = true;
+        } else if (currentFilterType === 'category') {
+          match = itemCat === currentFilterVal;
+        } else if (currentFilterType === 'tag') {
+          match = itemTags.includes(currentFilterVal);
+        }
+
+        if (match) {
+          item.classList.remove('hidden');
+          visible++;
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+
+      if (countDisplay) {
+        countDisplay.textContent = `找到 ${visible} 篇`;
+      }
+      if (emptyState) {
+        if (visible === 0) emptyState.classList.remove('hidden');
+        else emptyState.classList.add('hidden');
+      }
+    }
+
+    categoryBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        resetButtons();
+        btn.classList.add('bg-[var(--accent)]', 'text-white', 'border-[var(--accent)]', 'shadow-xs');
+        btn.classList.remove('border-transparent', 'text-[var(--text-secondary)]');
+
+        currentFilterType = btn.getAttribute('data-filter-type') || 'all';
+        currentFilterVal = btn.getAttribute('data-filter-val') || 'all';
+        applyFilter();
+      });
+    });
+
+    tagBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        resetButtons();
+        btn.classList.add('bg-[var(--accent)]', 'text-white', 'border-[var(--accent)]');
+        btn.classList.remove('bg-[var(--bg-surface-soft)]', 'text-[var(--text-secondary)]', 'border-[var(--border-color)]/70');
+
+        currentFilterType = 'tag';
+        currentFilterVal = btn.getAttribute('data-filter-val') || '';
+        applyFilter();
+      });
+    });
+  </script>
+</Layout>
