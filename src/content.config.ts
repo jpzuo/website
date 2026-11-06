@@ -26,6 +26,7 @@ const projects = defineCollection({
     techStack: z.array(z.string()).default([]),
     github: z.string().optional(),
     demo: z.string().optional(),
+    download: z.string().optional(),
     featured: z.boolean().default(false),
     order: z.number().default(0),
   }),

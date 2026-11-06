@@ -1,18 +1,20 @@
 ---
-import { ArrowUpRight, Sparkles, Building, CodeXml } from '@lucide/astro';
+import { ArrowUpRight, Sparkles, Building, CodeXml, Download } from '@lucide/astro';
 import Github from './icons/Github.astro';
 
 interface Props {
+  slug?: string;
   title: string;
   description: string;
   type: 'commercial' | 'opensource' | 'experiment';
   techStack: string[];
   github?: string;
   demo?: string;
+  download?: string;
   featured?: boolean;
 }
 
-const { title, description, type, techStack, github, demo, featured } = Astro.props;
+const { slug, title, description, type, techStack, github, demo, download, featured } = Astro.props;
 
 const typeConfig = {
   commercial: {
@@ -53,7 +55,7 @@ const TypeIcon = currentType.icon;
 
     <!-- Title -->
     <h3 class="font-serif-heading text-lg font-bold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors tracking-tight">
-      {title}
+      {slug ? <a href={`/projects/${slug}`}>{title}</a> : title}
     </h3>
 
     <!-- Description -->
@@ -73,7 +75,26 @@ const TypeIcon = currentType.icon;
     </div>
 
     <!-- Links -->
-    <div class="flex items-center gap-4 text-xs font-medium">
+    <div class="flex flex-wrap items-center gap-4 text-xs font-medium">
+      {slug && (
+        <a
+          href={`/projects/${slug}`}
+          class="inline-flex items-center gap-1 text-[var(--accent)] hover:underline"
+        >
+          <span>查看完整介绍</span>
+          <ArrowUpRight class="w-3.5 h-3.5" />
+        </a>
+      )}
+      {download && (
+        <a
+          href={download}
+          download
+          class="inline-flex items-center gap-1 text-[var(--accent)] hover:underline"
+        >
+          <Download class="w-3.5 h-3.5" />
+          <span>下载作品包 (.zip)</span>
+        </a>
+      )}
       {demo && (
         <a
           href={demo}
