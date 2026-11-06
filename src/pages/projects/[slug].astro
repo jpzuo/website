@@ -13,13 +13,15 @@ export async function getStaticPaths() {
 }
 
 const { project } = Astro.props;
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
+const downloadUrl = project.data.download ? `${base}${project.data.download.replace(/^\//, '')}` : undefined;
 const { Content } = await render(project);
 ---
 
 <Layout title={`${project.data.title} · 作品`} description={project.data.description}>
   <div class="space-y-8">
     <a
-      href="/projects"
+      href={`${base}projects`}
       class="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors group"
     >
       <ArrowLeft class="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -45,7 +47,7 @@ const { Content } = await render(project);
     {project.data.download && (
       <div class="p-5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)] flex flex-col sm:flex-row sm:items-center gap-4">
         <a
-          href={project.data.download}
+          href={downloadUrl}
           download
           class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--accent)] text-white text-sm font-medium hover:opacity-90 transition-opacity shrink-0"
         >
@@ -63,7 +65,7 @@ const { Content } = await render(project);
     </div>
 
     <div class="pt-6 border-t border-[var(--border-color)]">
-      <a href="/projects" class="text-sm text-[var(--accent)] hover:underline font-medium">
+      <a href={`${base}projects`} class="text-sm text-[var(--accent)] hover:underline font-medium">
         ← 返回作品
       </a>
     </div>

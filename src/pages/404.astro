@@ -1,6 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { ArrowLeft, Compass } from '@lucide/astro';
+
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
 ---
 
 <Layout title="404 · 页面未找到 · ZUO">
@@ -19,7 +21,7 @@ import { ArrowLeft, Compass } from '@lucide/astro';
 
     <div class="pt-4">
       <a
-        href="/"
+        href={base}
         class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-medium text-sm transition-colors shadow-xs"
       >
         <ArrowLeft class="w-4 h-4" />

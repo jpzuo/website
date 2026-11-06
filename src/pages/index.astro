@@ -11,6 +11,8 @@ const recentPosts = allPosts
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 10);
 
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
+
 const formatDate = (date: Date) => {
   return new Intl.DateTimeFormat('zh-CN', {
     year: 'numeric',
@@ -32,7 +34,7 @@ const formatDate = (date: Date) => {
           </h1>
         </div>
         <a
-          href="/blog"
+          href={`${base}blog`}
           class="text-xs font-medium text-[var(--accent)] hover:underline inline-flex items-center gap-1 group"
         >
           <span>查看全部目录 ({allPosts.length})</span>
@@ -55,7 +57,7 @@ const formatDate = (date: Date) => {
             </div>
 
             <h2 class="font-serif-heading text-lg sm:text-xl font-bold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
-              <a href={`/blog/${post.id}`}>
+              <a href={`${base}blog/${post.id}`}>
                 {post.data.title}
               </a>
             </h2>
@@ -69,7 +71,7 @@ const formatDate = (date: Date) => {
 
       <div class="pt-8 text-center border-t border-[var(--border-color)] mt-8">
         <a
-          href="/blog"
+          href={`${base}blog`}
           class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)] text-sm font-medium text-[var(--text-primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] hover:bg-[var(--bg-surface-soft)] transition-colors shadow-xs"
         >
           <span>浏览全部 {allPosts.length} 篇文章</span>

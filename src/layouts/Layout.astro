@@ -17,7 +17,8 @@ const {
   maxWidth = "max-w-4xl",
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://example.com');
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://jpzuo.github.io');
 ---
 
 <!doctype html>
@@ -25,8 +26,8 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site || 'https://example.
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="alternate" type="application/rss+xml" title="ZUO · RSS Feed" href="/rss.xml" />
+    <link rel="icon" type="image/svg+xml" href={`${base}favicon.svg`} />
+    <link rel="alternate" type="application/rss+xml" title="ZUO · RSS Feed" href={`${base}rss.xml`} />
     <link rel="canonical" href={canonicalURL} />
     <meta name="generator" content={Astro.generator} />
 
