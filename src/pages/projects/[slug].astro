@@ -13,7 +13,7 @@ export async function getStaticPaths() {
 }
 
 const { project } = Astro.props;
-const base = import.meta.env.BASE_URL;
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
 const downloadUrl = project.data.download ? `${base}${project.data.download.replace(/^\//, '')}` : undefined;
 const { Content } = await render(project);
 ---

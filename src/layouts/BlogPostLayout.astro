@@ -14,7 +14,7 @@ interface Props {
 
 const { title, description, pubDate, updatedDate, category, tags, headings = [] } = Astro.props;
 
-const base = import.meta.env.BASE_URL;
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
 
 const formattedDate = new Intl.DateTimeFormat('zh-CN', {
   year: 'numeric',
