@@ -14,6 +14,8 @@ interface Props {
 
 const { title, description, pubDate, updatedDate, category, tags, headings = [] } = Astro.props;
 
+const base = import.meta.env.BASE_URL;
+
 const formattedDate = new Intl.DateTimeFormat('zh-CN', {
   year: 'numeric',
   month: 'long',
@@ -28,7 +30,7 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
   <div class="relative">
     <!-- Back to blog navigation -->
     <a
-      href="/blog"
+      href={`${base}blog`}
       class="inline-flex items-center gap-1.5 text-sm text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors mb-8 group"
     >
       <ArrowLeft class="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
@@ -88,7 +90,7 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
             <p class="mt-0.5">转载请注明原作者与出处链接。</p>
           </div>
           <a
-            href="/blog"
+            href={`${base}blog`}
             class="text-[var(--accent)] hover:underline font-medium inline-flex items-center gap-1"
           >
             ← 探索更多思考手记

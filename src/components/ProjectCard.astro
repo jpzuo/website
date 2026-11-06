@@ -15,6 +15,8 @@ interface Props {
 }
 
 const { slug, title, description, type, techStack, github, demo, download, featured } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const downloadUrl = download ? `${base}${download.replace(/^\//, '')}` : undefined;
 
 const typeConfig = {
   commercial: {
@@ -55,7 +57,7 @@ const TypeIcon = currentType.icon;
 
     <!-- Title -->
     <h3 class="font-serif-heading text-lg font-bold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors tracking-tight">
-      {slug ? <a href={`/projects/${slug}`}>{title}</a> : title}
+      {slug ? <a href={`${base}projects/${slug}`}>{title}</a> : title}
     </h3>
 
     <!-- Description -->
@@ -78,7 +80,7 @@ const TypeIcon = currentType.icon;
     <div class="flex flex-wrap items-center gap-4 text-xs font-medium">
       {slug && (
         <a
-          href={`/projects/${slug}`}
+          href={`${base}projects/${slug}`}
           class="inline-flex items-center gap-1 text-[var(--accent)] hover:underline"
         >
           <span>查看完整介绍</span>
@@ -87,7 +89,7 @@ const TypeIcon = currentType.icon;
       )}
       {download && (
         <a
-          href={download}
+          href={downloadUrl}
           download
           class="inline-flex items-center gap-1 text-[var(--accent)] hover:underline"
         >
