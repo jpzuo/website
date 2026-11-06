@@ -65,12 +65,14 @@ const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
       {projects.map((project) => (
         <div class="project-wrapper" data-type={project.data.type}>
           <ProjectCard
+            slug={project.id}
             title={project.data.title}
             description={project.data.description}
             type={project.data.type}
             techStack={project.data.techStack}
             github={project.data.github}
             demo={project.data.demo}
+            download={project.data.download}
             featured={project.data.featured}
           />
         </div>
