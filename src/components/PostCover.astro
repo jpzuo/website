@@ -3,11 +3,10 @@
 // 纯 CSS/SVG 渲染，无图片文件，34 篇文章自动全覆盖。
 interface Props {
   category: string;
-  title: string;
   variant?: 'thumb' | 'banner';
 }
 
-const { category, title, variant = 'thumb' } = Astro.props;
+const { category, variant = 'thumb' } = Astro.props;
 
 const palettes: Record<string, { from: string; to: string; glyph: string }> = {
   '前端': { from: '#A84A28', to: '#D98A4B', glyph: '前' },
@@ -28,6 +27,12 @@ const gradient = `linear-gradient(135deg, ${palette.from} 0%, ${palette.to} 100%
     class="relative overflow-hidden rounded-2xl text-white"
     style={`background: ${gradient};`}
   >
+    {/* subtle dot pattern for a designed cover feel */}
+    <span
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 opacity-20"
+      style="background-image: radial-gradient(rgba(255,255,255,0.55) 1px, transparent 1px); background-size: 22px 22px;"
+    />
     <span
       aria-hidden="true"
       class="font-serif-heading pointer-events-none absolute -right-3 -bottom-10 select-none text-[11rem] font-bold leading-none opacity-15"
@@ -40,13 +45,10 @@ const gradient = `linear-gradient(135deg, ${palette.from} 0%, ${palette.to} 100%
     >
       ZUO
     </span>
-    <div class="relative px-6 py-10 sm:px-10 sm:py-14">
+    <div class="relative px-6 py-10 sm:px-10 sm:py-12">
       <span class="inline-block rounded bg-white/20 px-2.5 py-1 text-xs font-medium backdrop-blur-sm">
         {category}
       </span>
-      <p class="font-serif-heading mt-4 max-w-2xl text-2xl font-bold leading-snug sm:text-3xl">
-        {title}
-      </p>
     </div>
   </div>
 ) : (
