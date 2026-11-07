@@ -1,7 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import PostCover from '../../components/PostCover.astro';
+import { readingLabel } from '../../lib/reading-time';
 import { getCollection } from 'astro:content';
-import { Calendar, ArrowRight, Layers, Tag as TagIcon } from '@lucide/astro';
+import { Calendar, ArrowRight, Layers, Tag as TagIcon, Clock } from '@lucide/astro';
 
 const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
 
@@ -48,7 +50,33 @@ const formatDate = (date: Date) => {
       
       <!-- Left Fixed / Sticky Sidebar -->
       <aside class="md:col-span-4 lg:col-span-3 md:sticky md:top-24 md:max-h-[calc(100vh-7rem)] md:overflow-y-auto space-y-5 pr-1 scrollbar-none">
-        
+
+        <!-- Search Card -->
+        <div class="p-4 sm:p-5 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-surface)] shadow-xs">
+          <label for="search-input" class="sr-only">搜索文章</label>
+          <div class="relative">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            <input
+              id="search-input"
+              type="search"
+              placeholder="搜索标题、标签…"
+              autocomplete="off"
+              class="w-full rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface-soft)] pl-9 pr-8 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]"
+            />
+            <button
+              id="search-clear"
+              type="button"
+              aria-label="清空搜索"
+              class="hidden absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--border-color)] items-center justify-center text-xs leading-none cursor-pointer"
+            >
+              ×
+            </button>
+          </div>
+          <p class="mt-2 px-1 text-[11px] text-[var(--text-muted)]">
+            按标题、分类与标签搜索，与左侧筛选可叠加。
+          </p>
+        </div>
+
         <!-- Category Navigation Card -->
         <div class="p-4 sm:p-5 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-surface)] shadow-xs">
           <div class="flex items-center justify-between mb-3 px-1">
@@ -103,6 +131,15 @@ const formatDate = (date: Date) => {
             </div>
           </div>
         )}
+
+        <!-- Archive Link -->
+        <a
+          href={`${base}blog/archive`}
+          class="group flex items-center justify-between p-4 sm:p-5 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-surface)] shadow-xs text-sm font-medium text-[var(--text-primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
+        >
+          <span>按年归档</span>
+          <span class="text-xs text-[var(--text-muted)] group-hover:text-[var(--accent)]">查看全部 →</span>
+        </a>
       </aside>
 
       <!-- Right Articles Stream -->
@@ -114,7 +151,17 @@ const formatDate = (date: Date) => {
               style={`transition-delay:${Math.min(i, 6) * 50}ms`}
               data-category={post.data.category}
               data-tags={JSON.stringify(post.data.tags)}
+              data-search={`${post.data.title} ${post.data.description} ${post.data.category} ${post.data.tags.join(' ')}`.toLowerCase()}
             >
+              <div class="flex flex-col gap-5 sm:flex-row">
+              <a
+                href={`${base}blog/${post.id}`}
+                class="block aspect-[16/9] w-full shrink-0 sm:aspect-[4/3] sm:w-44"
+                aria-label={post.data.title}
+              >
+                <PostCover category={post.data.category} title={post.data.title} />
+              </a>
+              <div class="min-w-0 flex-1">
               <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-2">
                 <div class="flex items-center gap-2.5">
                   <span class="text-xs font-serif-heading font-medium text-[var(--accent)] bg-[var(--accent-soft)] px-2 py-0.5 rounded">
@@ -123,6 +170,10 @@ const formatDate = (date: Date) => {
                   <span class="text-xs text-[var(--text-muted)] flex items-center gap-1 font-mono-code">
                     <Calendar class="w-3 h-3" />
                     {formatDate(post.data.pubDate)}
+                  </span>
+                  <span class="text-xs text-[var(--text-muted)] flex items-center gap-1 font-mono-code">
+                    <Clock class="w-3 h-3" />
+                    {readingLabel(post.body)}
                   </span>
                 </div>
                 {post.data.featured && (
@@ -159,28 +210,33 @@ const formatDate = (date: Date) => {
                   <ArrowRight class="w-3.5 h-3.5" />
                 </a>
               </div>
+              </div>
+              </div>
             </article>
           ))}
 
           <!-- Empty state -->
           <div id="empty-state" class="hidden py-16 text-center text-sm text-[var(--text-muted)]">
-            该分类或标签下暂无文章，尝试点击左侧其他筛选选项。
+            没有找到匹配的文章，换个关键词或筛选条件试试。
           </div>
         </div>
       </div>
 
     </div>
 
-  <!-- Interactive Filter Script -->
+  <!-- Interactive Filter + Search Script -->
   <script is:inline>
     const categoryBtns = document.querySelectorAll('.filter-pill');
     const tagBtns = document.querySelectorAll('.filter-tag');
     const postItems = document.querySelectorAll('.post-item');
     const emptyState = document.getElementById('empty-state');
     const countDisplay = document.getElementById('filter-count');
+    const searchInput = document.getElementById('search-input');
+    const searchClear = document.getElementById('search-clear');
 
     let currentFilterType = 'all';
     let currentFilterVal = 'all';
+    let currentSearch = '';
 
     function resetButtons() {
       categoryBtns.forEach((btn) => {
@@ -195,9 +251,11 @@ const formatDate = (date: Date) => {
 
     function applyFilter() {
       let visible = 0;
+      const q = currentSearch.trim().toLowerCase();
       postItems.forEach((item) => {
         const itemCat = item.getAttribute('data-category') || '';
         const itemTags = JSON.parse(item.getAttribute('data-tags') || '[]');
+        const haystack = item.getAttribute('data-search') || '';
 
         let match = false;
         if (currentFilterType === 'all') {
@@ -206,6 +264,10 @@ const formatDate = (date: Date) => {
           match = itemCat === currentFilterVal;
         } else if (currentFilterType === 'tag') {
           match = itemTags.includes(currentFilterVal);
+        }
+
+        if (match && q) {
+          match = haystack.includes(q);
         }
 
         if (match) {
@@ -223,7 +285,24 @@ const formatDate = (date: Date) => {
         if (visible === 0) emptyState.classList.remove('hidden');
         else emptyState.classList.add('hidden');
       }
+      if (searchClear) {
+        const show = currentSearch.trim().length > 0;
+        searchClear.classList.toggle('hidden', !show);
+        searchClear.classList.toggle('flex', show);
+      }
     }
+
+    searchInput?.addEventListener('input', () => {
+      currentSearch = searchInput.value || '';
+      applyFilter();
+    });
+
+    searchClear?.addEventListener('click', () => {
+      if (searchInput) searchInput.value = '';
+      currentSearch = '';
+      applyFilter();
+      searchInput?.focus();
+    });
 
     categoryBtns.forEach((btn) => {
       btn.addEventListener('click', () => {

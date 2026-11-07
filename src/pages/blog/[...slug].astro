@@ -1,19 +1,30 @@
 ---
 import { getCollection, render } from 'astro:content';
 import BlogPostLayout from '../../layouts/BlogPostLayout.astro';
+import { readingLabel } from '../../lib/reading-time';
+
+const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
 
 export async function getStaticPaths() {
+  const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
   const posts = await getCollection('blog', ({ data }) => {
     return import.meta.env.PROD ? !data.draft : true;
   });
 
-  return posts.map((post) => ({
+  // Newest first; 上一篇 = 列表中更靠前（更新）的文章，下—篇 = 更早的文章
+  const sorted = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+  return sorted.map((post, i) => ({
     params: { slug: post.id },
-    props: { post },
+    props: {
+      post,
+      prevPost: i > 0 ? { title: sorted[i - 1].data.title, href: `${base}blog/${sorted[i - 1].id}` } : null,
+      nextPost: i < sorted.length - 1 ? { title: sorted[i + 1].data.title, href: `${base}blog/${sorted[i + 1].id}` } : null,
+    },
   }));
 }
 
-const { post } = Astro.props;
+const { post, prevPost, nextPost } = Astro.props;
 const { Content, headings } = await render(post);
 ---
 
@@ -24,7 +35,10 @@ const { Content, headings } = await render(post);
   updatedDate={post.data.updatedDate}
   category={post.data.category}
   tags={post.data.tags}
+  readingTime={readingLabel(post.body)}
   headings={headings}
+  prevPost={prevPost}
+  nextPost={nextPost}
 >
   <Content />
 </BlogPostLayout>

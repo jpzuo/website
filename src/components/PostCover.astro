@@ -1,0 +1,67 @@
+---
+// 文章封面：按分类配色的渐变面板 + 分类大字 + 标题。
+// 纯 CSS/SVG 渲染，无图片文件，34 篇文章自动全覆盖。
+interface Props {
+  category: string;
+  title: string;
+  variant?: 'thumb' | 'banner';
+}
+
+const { category, title, variant = 'thumb' } = Astro.props;
+
+const palettes: Record<string, { from: string; to: string; glyph: string }> = {
+  '前端': { from: '#A84A28', to: '#D98A4B', glyph: '前' },
+  '软考': { from: '#3E5C76', to: '#6E8CA8', glyph: '考' },
+  '代码箱': { from: '#3F6B4F', to: '#6FA287', glyph: '码' },
+  '笔记': { from: '#8A6D3B', to: '#C2A06B', glyph: '记' },
+  '随笔': { from: '#6B4E7A', to: '#A67BA8', glyph: '随' },
+  '旅游': { from: '#2E7D7B', to: '#5FB3A8', glyph: '游' },
+  '技术思考': { from: '#4A4E69', to: '#7E86A8', glyph: '思' },
+};
+
+const palette = palettes[category] ?? { from: '#A84A28', to: '#C98A5B', glyph: category.charAt(0) };
+const gradient = `linear-gradient(135deg, ${palette.from} 0%, ${palette.to} 100%)`;
+---
+
+{variant === 'banner' ? (
+  <div
+    class="relative overflow-hidden rounded-2xl text-white"
+    style={`background: ${gradient};`}
+  >
+    <span
+      aria-hidden="true"
+      class="font-serif-heading pointer-events-none absolute -right-3 -bottom-10 select-none text-[11rem] font-bold leading-none opacity-15"
+    >
+      {palette.glyph}
+    </span>
+    <span
+      aria-hidden="true"
+      class="font-serif-heading pointer-events-none absolute right-4 top-3 select-none text-xs font-bold tracking-[0.3em] opacity-40"
+    >
+      ZUO
+    </span>
+    <div class="relative px-6 py-10 sm:px-10 sm:py-14">
+      <span class="inline-block rounded bg-white/20 px-2.5 py-1 text-xs font-medium backdrop-blur-sm">
+        {category}
+      </span>
+      <p class="font-serif-heading mt-4 max-w-2xl text-2xl font-bold leading-snug sm:text-3xl">
+        {title}
+      </p>
+    </div>
+  </div>
+) : (
+  <div
+    class="relative flex h-full w-full shrink-0 items-center justify-center overflow-hidden rounded-xl text-white"
+    style={`background: ${gradient};`}
+  >
+    <span
+      aria-hidden="true"
+      class="font-serif-heading pointer-events-none absolute -right-1 -bottom-4 select-none text-7xl font-bold leading-none opacity-20"
+    >
+      {palette.glyph}
+    </span>
+    <span class="font-serif-heading relative px-2 text-center text-sm font-bold leading-snug">
+      {category}
+    </span>
+  </div>
+)}

@@ -1,6 +1,12 @@
 ---
 import Layout from './Layout.astro';
-import { Calendar, Tag, ArrowLeft } from '@lucide/astro';
+import PostCover from '../components/PostCover.astro';
+import { Calendar, Tag, ArrowLeft, Clock } from '@lucide/astro';
+
+interface PostLink {
+  title: string;
+  href: string;
+}
 
 interface Props {
   title: string;
@@ -9,10 +15,13 @@ interface Props {
   updatedDate?: Date;
   category: string;
   tags: string[];
+  readingTime?: string;
   headings?: { depth: number; slug: string; text: string }[];
+  prevPost?: PostLink | null;
+  nextPost?: PostLink | null;
 }
 
-const { title, description, pubDate, updatedDate, category, tags, headings = [] } = Astro.props;
+const { title, description, pubDate, updatedDate, category, tags, readingTime, headings = [], prevPost = null, nextPost = null } = Astro.props;
 
 const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
 
@@ -40,6 +49,11 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-12">
       <!-- Article Main Column -->
       <article class="lg:col-span-3">
+        <!-- Article Cover -->
+        <div class="mb-8">
+          <PostCover category={category} title={title} variant="banner" />
+        </div>
+
         <!-- Article Header -->
         <header class="pb-8 border-b border-[var(--border-color)]">
           <div class="flex items-center gap-3 mb-4">
@@ -55,6 +69,12 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
                 </span>
               )}
             </div>
+            {readingTime && (
+              <span class="flex items-center gap-1 text-xs text-[var(--text-muted)] font-mono-code">
+                <Clock class="w-3.5 h-3.5" />
+                {readingTime}
+              </span>
+            )}
           </div>
 
           <h1 class="font-serif-heading text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-[var(--text-primary)] leading-[1.25]">
@@ -78,10 +98,65 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
           )}
         </header>
 
+        <!-- Mobile TOC (collapsible, below lg) -->
+        {tocHeadings.length > 0 && (
+          <details class="lg:hidden mb-8 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)]">
+            <summary class="px-4 py-3 text-sm font-serif-heading font-bold text-[var(--text-primary)] cursor-pointer list-none flex items-center justify-between">
+              <span>文章目录（{tocHeadings.length} 节）</span>
+              <span class="text-[var(--text-muted)] text-xs">展开 ▾</span>
+            </summary>
+            <nav class="px-4 pb-4 space-y-1.5 text-sm border-t border-[var(--border-color)] pt-3">
+              {tocHeadings.map((h) => (
+                <a
+                  href={`#${h.slug}`}
+                  class={`toc-link block text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors py-1 ${
+                    h.depth === 3 ? 'pl-3 text-xs' : 'font-medium'
+                  }`}
+                  data-slug={h.slug}
+                >
+                  {h.text}
+                </a>
+              ))}
+            </nav>
+          </details>
+        )}
+
         <!-- Article Body -->
         <div class="mt-8 prose dark:prose-invert prose-stone max-w-none prose-headings:font-serif-heading prose-headings:font-bold prose-headings:tracking-tight prose-a:text-[var(--accent)] prose-a:underline hover:prose-a:text-[var(--accent-hover)] prose-blockquote:border-l-[var(--accent)] prose-blockquote:font-serif-heading prose-blockquote:italic prose-pre:my-6 prose-pre:rounded-xl leading-relaxed">
           <slot />
         </div>
+
+        <!-- Prev / Next Navigation -->
+        {(prevPost || nextPost) && (
+          <nav class="mt-14 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {prevPost ? (
+              <a
+                href={prevPost.href}
+                class="group rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)] p-4 hover:border-[var(--accent)] transition-colors"
+              >
+                <span class="block text-[11px] font-mono-code text-[var(--text-muted)] mb-1">← 上一篇 · 更新的文章</span>
+                <span class="font-serif-heading font-bold text-sm text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors line-clamp-2">
+                  {prevPost.title}
+                </span>
+              </a>
+            ) : (
+              <span />
+            )}
+            {nextPost ? (
+              <a
+                href={nextPost.href}
+                class="group rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)] p-4 text-right hover:border-[var(--accent)] transition-colors"
+              >
+                <span class="block text-[11px] font-mono-code text-[var(--text-muted)] mb-1">下一篇 · 更早的文章 →</span>
+                <span class="font-serif-heading font-bold text-sm text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors line-clamp-2">
+                  {nextPost.title}
+                </span>
+              </a>
+            ) : (
+              <span />
+            )}
+          </nav>
+        )}
 
         <!-- Article Footer & Copyright -->
         <footer class="mt-14 pt-8 border-t border-[var(--border-color)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-[var(--text-muted)]">
@@ -109,9 +184,10 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
               {tocHeadings.map((h) => (
                 <a
                   href={`#${h.slug}`}
-                  class={`block text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors py-1 ${
+                  class={`toc-link block text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors py-1 ${
                     h.depth === 3 ? 'pl-3 text-[11px]' : 'font-medium'
                   }`}
+                  data-slug={h.slug}
                 >
                   {h.text}
                 </a>
@@ -148,5 +224,32 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
       wrapper.appendChild(copyBtn);
     });
+  </script>
+
+  <!-- TOC scroll-spy: highlight the heading currently in view -->
+  <script is:inline>
+    (function () {
+      var links = Array.from(document.querySelectorAll('.toc-link'));
+      if (!links.length) return;
+      var headings = links
+        .map(function (link) { return document.getElementById(link.getAttribute('data-slug') || ''); })
+        .filter(Boolean);
+      if (!headings.length || !('IntersectionObserver' in window)) return;
+
+      function setActive(id) {
+        links.forEach(function (link) {
+          var on = link.getAttribute('data-slug') === id;
+          link.classList.toggle('text-[var(--accent)]', on);
+          link.classList.toggle('font-semibold', on);
+        });
+      }
+
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      }, { rootMargin: '-15% 0px -70% 0px' });
+      headings.forEach(function (h) { io.observe(h); });
+    })();
   </script>
 </Layout>
