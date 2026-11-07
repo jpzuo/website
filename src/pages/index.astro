@@ -1,8 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import { readingLabel } from '../lib/reading-time';
 import { getCollection } from 'astro:content';
-import { ArrowRight, ArrowUpRight, BookOpen, Calendar } from '@lucide/astro';
+import { ArrowRight, ArrowUpRight, BookOpen, Calendar, Clock } from '@lucide/astro';
 
 // Fetch recent posts
 const allPosts = await getCollection('blog', ({ data }) => {
@@ -147,6 +148,11 @@ const formatDate = (date: Date) => {
                 <Calendar class="w-3.5 h-3.5" />
                 {formatDate(post.data.pubDate)}
               </time>
+              <span>·</span>
+              <span class="flex items-center gap-1">
+                <Clock class="w-3.5 h-3.5" />
+                {readingLabel(post.body)}
+              </span>
             </div>
 
             <h3 class="font-serif-heading text-lg font-bold text-[var(--text-primary)] transition-colors group-hover:text-[var(--accent)] sm:text-xl">
