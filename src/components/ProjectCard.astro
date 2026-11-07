@@ -40,7 +40,7 @@ const currentType = typeConfig[type] || typeConfig.opensource;
 const TypeIcon = currentType.icon;
 ---
 
-<div class={`group relative p-6 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)] hover:border-[var(--accent)] hover:shadow-md transition-all duration-200 flex flex-col justify-between ${featured ? 'ring-1 ring-[var(--accent)]/30' : ''}`}>
+<div class={`group relative p-6 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)] hover:-translate-y-1 hover:border-[var(--accent)] hover:shadow-lg transition-all duration-200 flex flex-col justify-between ${featured ? 'ring-1 ring-[var(--accent)]/30' : ''}`}>
   <div>
     <!-- Top Meta: Type badge & Featured tag -->
     <div class="flex items-center justify-between gap-2 mb-3">

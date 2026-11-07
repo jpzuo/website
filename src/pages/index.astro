@@ -1,7 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
 import { getCollection } from 'astro:content';
-import { ArrowRight, BookOpen, Calendar } from '@lucide/astro';
+import { ArrowRight, ArrowUpRight, BookOpen, Calendar } from '@lucide/astro';
 
 // Fetch recent posts
 const allPosts = await getCollection('blog', ({ data }) => {
@@ -10,6 +11,12 @@ const allPosts = await getCollection('blog', ({ data }) => {
 const recentPosts = allPosts
   .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
   .slice(0, 10);
+
+const allProjects = await getCollection('projects');
+const featuredProjects = allProjects
+  .filter((p) => p.data.featured)
+  .sort((a, b) => a.data.order - b.data.order);
+const yearsWriting = new Date().getFullYear() - 2020;
 
 const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
 
@@ -24,29 +31,115 @@ const formatDate = (date: Date) => {
 
 <Layout>
   <div>
+    <!-- Hero -->
+    <section class="relative overflow-hidden pt-6 pb-10 sm:pt-10 sm:pb-14">
+      <span aria-hidden="true" class="pointer-events-none select-none absolute -right-2 -top-8 hidden font-serif-heading text-[11rem] font-bold leading-none text-[var(--text-primary)] opacity-[0.04] sm:block">ZUO</span>
+      <p class="reveal font-mono-code text-xs tracking-[0.2em] uppercase text-[var(--accent)]">
+        你好，我是 ZUO · 全栈工程师
+      </p>
+      <h1 class="reveal mt-4 font-serif-heading text-4xl font-bold leading-[1.15] tracking-tight text-[var(--text-primary)] sm:text-5xl lg:text-[3.4rem]" style="transition-delay:60ms">
+        写代码，<br />也写思考。
+      </h1>
+      <p class="reveal mt-5 max-w-xl text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg" style="transition-delay:120ms">
+        专注分布式系统、现代 Web 与国际化工程。这里是我的技术主页与思考沉淀：手记、作品与实验，都在这里。
+      </p>
+      <div class="reveal mt-7 flex flex-wrap items-center gap-3" style="transition-delay:180ms">
+        <a
+          href={`${base}projects`}
+          class="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[var(--accent-hover)]"
+        >
+          看看我的作品
+          <ArrowUpRight class="w-4 h-4" />
+        </a>
+        <a
+          href={`${base}blog`}
+          class="inline-flex items-center gap-2 rounded-full border border-[var(--border-color)] bg-[var(--bg-surface)] px-6 py-3 text-sm font-medium text-[var(--text-primary)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+        >
+          读最新文章
+          <ArrowRight class="w-4 h-4" />
+        </a>
+      </div>
+      <dl class="reveal mt-10 flex flex-wrap gap-x-10 gap-y-4 border-t border-[var(--border-color)] pt-6" style="transition-delay:240ms">
+        <div>
+          <dt class="sr-only">文章数</dt>
+          <dd class="font-serif-heading text-2xl font-bold text-[var(--text-primary)]">
+            {allPosts.length}<span class="ml-1 text-sm font-medium text-[var(--text-muted)]">篇手记</span>
+          </dd>
+        </div>
+        <div>
+          <dt class="sr-only">作品数</dt>
+          <dd class="font-serif-heading text-2xl font-bold text-[var(--text-primary)]">
+            {allProjects.length}<span class="ml-1 text-sm font-medium text-[var(--text-muted)]">个作品</span>
+          </dd>
+        </div>
+        <div>
+          <dt class="sr-only">持续写作</dt>
+          <dd class="font-serif-heading text-2xl font-bold text-[var(--text-primary)]">
+            {yearsWriting}<span class="ml-1 text-sm font-medium text-[var(--text-muted)]">年持续写作</span>
+          </dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- Featured Works -->
+    {featuredProjects.length > 0 && (
+      <section class="reveal pb-4">
+        <div class="mb-6 flex items-baseline justify-between border-b border-[var(--border-color)] pb-4">
+          <h2 class="font-serif-heading text-xl font-bold tracking-tight text-[var(--text-primary)] sm:text-2xl">
+            精选作品
+          </h2>
+          <a
+            href={`${base}projects`}
+            class="inline-flex items-center gap-1 text-xs font-medium text-[var(--accent)] hover:underline"
+          >
+            <span>全部作品</span>
+            <ArrowRight class="w-3.5 h-3.5" />
+          </a>
+        </div>
+        <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+          {featuredProjects.map((project) => (
+            <ProjectCard
+              slug={project.id}
+              title={project.data.title}
+              description={project.data.description}
+              type={project.data.type}
+              techStack={project.data.techStack}
+              github={project.data.github}
+              demo={project.data.demo}
+              download={project.data.download}
+              featured={project.data.featured}
+            />
+          ))}
+        </div>
+      </section>
+    )}
+
     <!-- Recent Blog Posts Section -->
-    <section class="pt-2">
-      <div class="flex items-baseline justify-between mb-8 pb-4 border-b border-[var(--border-color)]">
+    <section class="pt-10">
+      <div class="mb-8 flex items-baseline justify-between border-b border-[var(--border-color)] pb-4">
         <div class="flex items-center gap-2">
           <BookOpen class="w-5 h-5 text-[var(--accent)]" />
-          <h1 class="font-serif-heading text-xl sm:text-2xl font-bold text-[var(--text-primary)] tracking-tight">
+          <h2 class="font-serif-heading text-xl font-bold tracking-tight text-[var(--text-primary)] sm:text-2xl">
             最新手记与思考
-          </h1>
+          </h2>
         </div>
         <a
           href={`${base}blog`}
-          class="text-xs font-medium text-[var(--accent)] hover:underline inline-flex items-center gap-1 group"
+          class="group inline-flex items-center gap-1 text-xs font-medium text-[var(--accent)] hover:underline"
         >
           <span>查看全部目录 ({allPosts.length})</span>
-          <ArrowRight class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+          <ArrowRight class="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
         </a>
       </div>
 
       <div class="divide-y divide-[var(--border-color)]">
-        {recentPosts.map((post) => (
-          <article class="py-6 first:pt-0 group">
-            <div class="flex items-center gap-3 text-xs mb-2 font-mono-code text-[var(--text-muted)]">
-              <span class="text-[var(--accent)] font-serif-heading font-medium bg-[var(--accent-soft)] px-2 py-0.5 rounded">
+        {recentPosts.map((post, i) => (
+          <article
+            class="reveal group -mx-4 rounded-xl px-4 py-6 transition-colors first:pt-0 hover:bg-[var(--bg-surface)]"
+            style={`transition-delay:${Math.min(i, 5) * 60}ms`}
+          >
+            <div class="mb-2 flex items-center gap-3 font-mono-code text-xs text-[var(--text-muted)]">
+              <span class="rounded bg-[var(--accent-soft)] px-2 py-0.5 font-serif-heading font-medium text-[var(--accent)]">
                 {post.data.category}
               </span>
               <span>·</span>
@@ -56,23 +149,23 @@ const formatDate = (date: Date) => {
               </time>
             </div>
 
-            <h2 class="font-serif-heading text-lg sm:text-xl font-bold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors">
+            <h3 class="font-serif-heading text-lg font-bold text-[var(--text-primary)] transition-colors group-hover:text-[var(--accent)] sm:text-xl">
               <a href={`${base}blog/${post.id}`}>
                 {post.data.title}
               </a>
-            </h2>
+            </h3>
 
-            <p class="mt-2 text-sm text-[var(--text-secondary)] line-clamp-2 leading-relaxed">
+            <p class="mt-2 line-clamp-2 text-sm leading-relaxed text-[var(--text-secondary)]">
               {post.data.description}
             </p>
           </article>
         ))}
       </div>
 
-      <div class="pt-8 text-center border-t border-[var(--border-color)] mt-8">
+      <div class="mt-8 border-t border-[var(--border-color)] pt-8 text-center">
         <a
           href={`${base}blog`}
-          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)] text-sm font-medium text-[var(--text-primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] hover:bg-[var(--bg-surface-soft)] transition-colors shadow-xs"
+          class="inline-flex items-center gap-2 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)] px-6 py-2.5 text-sm font-medium text-[var(--text-primary)] shadow-xs transition-colors hover:border-[var(--accent)] hover:bg-[var(--bg-surface-soft)] hover:text-[var(--accent)]"
         >
           <span>浏览全部 {allPosts.length} 篇文章</span>
           <ArrowRight class="w-4 h-4" />
