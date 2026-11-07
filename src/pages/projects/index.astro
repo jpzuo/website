@@ -62,8 +62,8 @@ const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
 
     <!-- Projects Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="projects-grid">
-      {projects.map((project) => (
-        <div class="project-wrapper" data-type={project.data.type}>
+      {projects.map((project, i) => (
+        <div class="reveal project-wrapper" data-type={project.data.type} style={`transition-delay:${Math.min(i, 5) * 80}ms`}>
           <ProjectCard
             slug={project.id}
             title={project.data.title}

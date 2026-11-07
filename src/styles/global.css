@@ -46,12 +46,12 @@
 
   /* Editorial Serif typography for headings & quotes */
   .font-serif-heading {
-    font-family: "Charter", "Bitstream Charter", "Georgia", "Songti SC", "SimSun", serif;
+    font-family: "Noto Serif SC", "Songti SC", "STSong", "SimSun", "Charter", "Bitstream Charter", Georgia, serif;
   }
 
   /* Monospace for code elements */
   .font-mono-code {
-    font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-family: "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
   }
 }
 
@@ -85,4 +85,32 @@ pre.astro-code {
   font-size: 0.9rem;
   line-height: 1.6;
   overflow-x: auto;
+}
+
+/* Scroll reveal: hidden until scrolled into view (JS adds .is-visible) */
+.reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Text selection in accent tint */
+::selection {
+  background: var(--accent-soft);
+  color: var(--text-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
 }

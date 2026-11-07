@@ -108,9 +108,10 @@ const formatDate = (date: Date) => {
       <!-- Right Articles Stream -->
       <div class="md:col-span-8 lg:col-span-9 min-w-0">
         <div class="divide-y divide-[var(--border-color)]" id="posts-container">
-          {posts.map((post) => (
+          {posts.map((post, i) => (
             <article
-              class="post-item py-7 first:pt-1 group transition-colors duration-150"
+              class="reveal post-item py-7 first:pt-1 group transition-colors duration-150"
+              style={`transition-delay:${Math.min(i, 6) * 50}ms`}
               data-category={post.data.category}
               data-tags={JSON.stringify(post.data.tags)}
             >
