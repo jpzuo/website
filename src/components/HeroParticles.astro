@@ -1,5 +1,6 @@
 ---
-// 首屏粒子画布：缓慢漂移的粒子 + 就近连线，鼠标靠近时牵引连线。
+// 首屏水墨画布：缓慢晕开的墨点 + 淡墨连线，少数朱红点缀，
+// 另有几团大面积的淡墨晕染在底层缓慢漂移，像墨入水。
 // 零依赖，纯 Canvas；移动端减量、减动效下只画一帧静态图、离开视口时停跑。
 // 切换页面回来会重新初始化，旧的监听与动画帧在重进时先清理掉。
 ---
@@ -31,12 +32,13 @@
       if (!ctx) return;
 
       var dpr = Math.min(window.devicePixelRatio || 1, 2);
-      var W = 0, H = 0, parts = [], mouse = { x: -9999, y: -9999 };
+      var W = 0, H = 0, parts = [], blots = [], mouse = { x: -9999, y: -9999 };
       var running = false, rafId = 0, visible = true, io = null;
 
-      // 从站点配色取陶土红，避免写死色值导致深色模式失调
+      // 从站点配色取墨色与朱红，避免写死色值导致深色模式失调
       var cs = getComputedStyle(document.documentElement);
-      var accent = (cs.getPropertyValue('--accent') || '#A84A28').trim();
+      var ink = (cs.getPropertyValue('--text-primary') || '#1C1A17').trim();
+      var seal = (cs.getPropertyValue('--accent') || '#B03A2E').trim();
 
       function resize() {
         var rect = hero.getBoundingClientRect();
@@ -56,10 +58,24 @@
           parts.push({
             x: Math.random() * W,
             y: Math.random() * H,
-            vx: (Math.random() - 0.5) * 0.35,
-            vy: (Math.random() - 0.5) * 0.35,
-            r: 1 + Math.random() * 1.8,
-            a: 0.25 + Math.random() * 0.45,
+            vx: (Math.random() - 0.5) * 0.22,
+            vy: (Math.random() - 0.5) * 0.22,
+            r: 1 + Math.random() * 1.6,
+            a: 0.15 + Math.random() * 0.35,
+            // 约一成半的墨点用朱红，像印泥落点
+            red: Math.random() < 0.14,
+          });
+        }
+        // 底层淡墨晕染：3 团大面积、极淡的墨晕
+        blots = [];
+        for (var b = 0; b < 3; b++) {
+          blots.push({
+            x: Math.random() * W,
+            y: Math.random() * H,
+            r: 60 + Math.random() * 80,
+            a: 0.04 + Math.random() * 0.03,
+            vx: (Math.random() - 0.5) * 0.12,
+            vy: (Math.random() - 0.5) * 0.12,
           });
         }
       }
@@ -73,6 +89,20 @@
 
       function draw() {
         ctx.clearRect(0, 0, W, H);
+        // 先画底层淡墨晕染
+        for (var b = 0; b < blots.length; b++) {
+          var bl = blots[b];
+          bl.x += bl.vx; bl.y += bl.vy;
+          if (bl.x < -bl.r) bl.x = W + bl.r; if (bl.x > W + bl.r) bl.x = -bl.r;
+          if (bl.y < -bl.r) bl.y = H + bl.r; if (bl.y > H + bl.r) bl.y = -bl.r;
+          var grad = ctx.createRadialGradient(bl.x, bl.y, 0, bl.x, bl.y, bl.r);
+          grad.addColorStop(0, hexToRgba(ink, bl.a));
+          grad.addColorStop(1, hexToRgba(ink, 0));
+          ctx.beginPath();
+          ctx.arc(bl.x, bl.y, bl.r, 0, Math.PI * 2);
+          ctx.fillStyle = grad;
+          ctx.fill();
+        }
         var linkDist = 120, mouseDist = 170;
         for (var i = 0; i < parts.length; i++) {
           var p = parts[i];
@@ -88,7 +118,7 @@
 
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = hexToRgba(accent, p.a);
+          ctx.fillStyle = p.red ? hexToRgba(seal, p.a) : hexToRgba(ink, p.a);
           ctx.fill();
 
           for (var j = i + 1; j < parts.length; j++) {
@@ -99,7 +129,7 @@
               ctx.beginPath();
               ctx.moveTo(p.x, p.y);
               ctx.lineTo(q.x, q.y);
-              ctx.strokeStyle = hexToRgba(accent, (1 - d / linkDist) * 0.16);
+              ctx.strokeStyle = hexToRgba(ink, (1 - d / linkDist) * 0.1);
               ctx.lineWidth = 1;
               ctx.stroke();
             }
@@ -108,7 +138,7 @@
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(mouse.x, mouse.y);
-            ctx.strokeStyle = hexToRgba(accent, (1 - dm / mouseDist) * 0.28);
+            ctx.strokeStyle = hexToRgba(ink, (1 - dm / mouseDist) * 0.2);
             ctx.lineWidth = 1;
             ctx.stroke();
           }

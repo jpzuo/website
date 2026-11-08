@@ -36,7 +36,19 @@ const formatDate = (date: Date) => {
     <!-- Hero -->
     <section class="relative overflow-hidden pt-6 pb-10 sm:pt-10 sm:pb-14">
       <HeroParticles />
+      {/* 远山剪影：两层淡墨山峦 + 一轮朱红日 */}
+      <svg aria-hidden="true" class="pointer-events-none absolute inset-x-0 bottom-0 h-36 w-full" preserveAspectRatio="none" viewBox="0 0 800 120">
+        <path d="M0 90 L90 45 L170 85 L260 30 L350 80 L430 50 L520 88 L620 40 L700 82 L800 55 L800 120 L0 120 Z" fill="var(--text-primary)" opacity="0.05" />
+        <path d="M0 105 L120 70 L230 100 L340 62 L470 102 L580 72 L690 100 L800 78 L800 120 L0 120 Z" fill="var(--text-primary)" opacity="0.08" />
+        <circle cx="668" cy="34" r="13" fill="var(--accent)" opacity="0.85" />
+      </svg>
       <span id="hero-watermark" aria-hidden="true" class="hero-watermark pointer-events-none select-none absolute -right-2 -top-8 hidden font-serif-heading text-[11rem] font-bold leading-none sm:block">ZUO</span>
+      {/* 右侧竖排题字 + 印章（桌面端） */}
+      <div aria-hidden="true" class="pointer-events-none absolute right-2 top-44 hidden select-none flex-col items-center gap-4 lg:flex">
+        <span class="seal h-10 w-10 text-lg">左</span>
+        <span class="vertical-text font-serif-heading text-sm text-[var(--text-muted)]">代码为墨</span>
+      </div>
+      <div class="relative">
       <p class="reveal font-mono-code text-xs tracking-[0.2em] uppercase text-[var(--accent)]">
         你好，我是 ZUO · 全栈工程师
       </p>
@@ -49,14 +61,14 @@ const formatDate = (date: Date) => {
       <div class="reveal mt-7 flex flex-wrap items-center gap-3" style="transition-delay:180ms">
         <a
           href={`${base}projects`}
-          class="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-medium text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[var(--accent-hover)] hover:shadow-md active:translate-y-0 active:scale-[0.98]"
+          class="inline-flex items-center gap-2 rounded-md bg-[var(--text-primary)] px-6 py-3 text-sm font-medium text-[var(--bg-page)] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:opacity-90 hover:shadow-md active:translate-y-0 active:scale-[0.98]"
         >
           看看我的作品
           <ArrowUpRight class="w-4 h-4" />
         </a>
         <a
           href={`${base}blog`}
-          class="inline-flex items-center gap-2 rounded-full border border-[var(--border-color)] bg-[var(--bg-surface)] px-6 py-3 text-sm font-medium text-[var(--text-primary)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] hover:shadow-md active:translate-y-0 active:scale-[0.98]"
+          class="inline-flex items-center gap-2 rounded-md border border-[var(--border-color)] bg-[var(--bg-surface)] px-6 py-3 text-sm font-medium text-[var(--text-primary)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] hover:shadow-md active:translate-y-0 active:scale-[0.98]"
         >
           读最新文章
           <ArrowRight class="w-4 h-4" />
@@ -82,6 +94,7 @@ const formatDate = (date: Date) => {
           </dd>
         </div>
       </dl>
+      </div>
     </section>
 
     <!-- Tech Marquee -->
@@ -99,7 +112,7 @@ const formatDate = (date: Date) => {
     <!-- Featured Works -->
     {featuredProjects.length > 0 && (
       <section class="reveal pb-4">
-        <div class="mb-6 flex items-baseline justify-between border-b border-[var(--border-color)] pb-4">
+        <div class="mb-4 flex items-baseline justify-between">
           <h2 class="font-serif-heading text-xl font-bold tracking-tight text-[var(--text-primary)] sm:text-2xl">
             精选作品
           </h2>
@@ -111,6 +124,7 @@ const formatDate = (date: Date) => {
             <ArrowRight class="w-3.5 h-3.5" />
           </a>
         </div>
+        <span aria-hidden="true" class="brush-line mb-6"></span>
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
           {featuredProjects.map((project) => (
             <ProjectCard
@@ -131,7 +145,7 @@ const formatDate = (date: Date) => {
 
     <!-- Recent Blog Posts Section -->
     <section class="pt-10">
-      <div class="mb-8 flex items-baseline justify-between border-b border-[var(--border-color)] pb-4">
+      <div class="mb-4 flex items-baseline justify-between">
         <div class="flex items-center gap-2">
           <BookOpen class="w-5 h-5 text-[var(--accent)]" />
           <h2 class="font-serif-heading text-xl font-bold tracking-tight text-[var(--text-primary)] sm:text-2xl">
@@ -146,6 +160,7 @@ const formatDate = (date: Date) => {
           <ArrowRight class="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
         </a>
       </div>
+      <span aria-hidden="true" class="brush-line mb-8"></span>
 
       <div class="divide-y divide-[var(--border-color)]">
         {recentPosts.map((post, i) => (

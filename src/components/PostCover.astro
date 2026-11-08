@@ -1,5 +1,5 @@
 ---
-// 文章封面：按分类配色的渐变面板 + 分类大字 + 标题。
+// 文章封面：水墨风——按分类配不同深浅的墨色晕染 + 分类大字 + 朱红印。
 // 纯 CSS/SVG 渲染，无图片文件，34 篇文章自动全覆盖。
 interface Props {
   category: string;
@@ -9,47 +9,49 @@ interface Props {
 const { category, variant = 'thumb' } = Astro.props;
 
 const palettes: Record<string, { from: string; to: string; glyph: string }> = {
-  '前端': { from: '#A84A28', to: '#D98A4B', glyph: '前' },
-  '软考': { from: '#3E5C76', to: '#6E8CA8', glyph: '考' },
-  '代码箱': { from: '#3F6B4F', to: '#6FA287', glyph: '码' },
-  '笔记': { from: '#8A6D3B', to: '#C2A06B', glyph: '记' },
-  '随笔': { from: '#6B4E7A', to: '#A67BA8', glyph: '随' },
-  '旅游': { from: '#2E7D7B', to: '#5FB3A8', glyph: '游' },
-  '技术思考': { from: '#4A4E69', to: '#7E86A8', glyph: '思' },
+  '前端': { from: '#2B2823', to: '#6B6455', glyph: '前' },
+  '软考': { from: '#3A3A38', to: '#7A766C', glyph: '考' },
+  '代码箱': { from: '#33302B', to: '#6E6759', glyph: '码' },
+  '笔记': { from: '#4A4438', to: '#8A7F68', glyph: '记' },
+  '随笔': { from: '#3E3B36', to: '#7C7466', glyph: '随' },
+  '旅游': { from: '#2E3330', to: '#5F6B62', glyph: '游' },
+  '技术思考': { from: '#26241F', to: '#57503F', glyph: '思' },
 };
 
-const palette = palettes[category] ?? { from: '#A84A28', to: '#C98A5B', glyph: category.charAt(0) };
+const palette = palettes[category] ?? { from: '#2B2823', to: '#6B6455', glyph: category.charAt(0) };
 const gradient = `linear-gradient(135deg, ${palette.from} 0%, ${palette.to} 100%)`;
 ---
 
 {variant === 'banner' ? (
   <div
-    class="relative overflow-hidden rounded-2xl text-white"
-    style={`background: ${gradient};`}
+    class="relative overflow-hidden rounded-xl border border-[var(--border-color)]"
+    style="background: linear-gradient(135deg, #EFE9DB 0%, #FDFBF5 100%);"
   >
-    {/* subtle dot pattern for a designed cover feel */}
+    {/* 淡墨晕染 + 大字 */}
     <span
       aria-hidden="true"
-      class="pointer-events-none absolute inset-0 opacity-20"
-      style="background-image: radial-gradient(rgba(255,255,255,0.55) 1px, transparent 1px); background-size: 22px 22px;"
-    />
-    <span
-      aria-hidden="true"
-      class="font-serif-heading pointer-events-none absolute -right-3 -bottom-10 select-none text-[11rem] font-bold leading-none opacity-15"
+      class="font-serif-heading pointer-events-none absolute -right-3 -bottom-10 select-none text-[11rem] font-bold leading-none text-[var(--text-primary)] opacity-10"
     >
       {palette.glyph}
     </span>
     <span
       aria-hidden="true"
-      class="font-serif-heading pointer-events-none absolute right-4 top-3 select-none text-xs font-bold tracking-[0.3em] opacity-40"
+      class="font-serif-heading pointer-events-none absolute right-4 top-3 select-none text-xs font-bold tracking-[0.3em] text-[var(--text-muted)] opacity-60"
     >
       ZUO
     </span>
     <div class="relative px-6 py-10 sm:px-10 sm:py-12">
-      <span class="inline-block rounded bg-white/20 px-2.5 py-1 text-xs font-medium backdrop-blur-sm">
+      <span class="inline-block rounded-sm bg-[var(--accent)] px-2.5 py-1 text-xs font-medium text-white">
         {category}
       </span>
     </div>
+    {/* 右下角小印 */}
+    <span
+      aria-hidden="true"
+      class="seal pointer-events-none absolute bottom-4 right-4 h-8 w-8 select-none text-sm"
+    >
+      左
+    </span>
   </div>
 ) : (
   <div
@@ -65,5 +67,10 @@ const gradient = `linear-gradient(135deg, ${palette.from} 0%, ${palette.to} 100%
     <span class="font-serif-heading relative px-2 text-center text-sm font-bold leading-snug">
       {category}
     </span>
+    {/* 左上角朱红印点 */}
+    <span
+      aria-hidden="true"
+      class="pointer-events-none absolute left-2 top-2 h-2.5 w-2.5 rounded-[2px] bg-[var(--accent)] opacity-90"
+    />
   </div>
 )}
