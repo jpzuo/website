@@ -1,8 +1,9 @@
 ---
 // 湖山水墨：喀斯特峰林 + 云雾 + 湖面倒影 + 小船 + 水榭 + 飞鸟。
 // 按参考图（雾中山水、湖心小船）重绘，纯墨色，无红日。
-// 构图取 slice 安全带：关键元素集中在 x 350–850、y 140–280，
-// 宽屏裁剪与窄屏居中裁剪下都能完整呈现。
+// 柔和处理：山体用平滑贝塞尔曲线 + 高斯模糊，边缘化入雾中，不再是硬折线多边形；
+// 小船、水榭、飞鸟保持清晰。构图取 slice 安全带：关键元素集中在
+// x 350–850、y 140–280，宽屏裁剪与窄屏居中裁剪下都能完整呈现。
 interface Props {
   class?: string;
 }
@@ -22,33 +23,46 @@ const { class: className = '' } = Astro.props;
       <stop offset="50%" stop-color="var(--bg-page)" stop-opacity="0.55" />
       <stop offset="100%" stop-color="var(--bg-page)" stop-opacity="0" />
     </linearGradient>
+    <filter id="ink-blur-far" x="-5%" y="-20%" width="110%" height="140%">
+      <feGaussianBlur stdDeviation="10" />
+    </filter>
+    <filter id="ink-blur-mid" x="-5%" y="-20%" width="110%" height="140%">
+      <feGaussianBlur stdDeviation="6" />
+    </filter>
+    <filter id="ink-blur-near" x="-5%" y="-20%" width="110%" height="140%">
+      <feGaussianBlur stdDeviation="3" />
+    </filter>
   </defs>
-  {/* 远山：淡墨峰林 */}
+  {/* 远山：淡墨峰林，平滑曲线 + 强模糊 */}
   <path
-    d="M0 260 L70 200 L120 245 L180 165 L240 240 L300 175 L360 250 L430 160 L500 240 L560 180 L640 250 L720 155 L800 235 L870 170 L940 245 L1010 160 L1080 240 L1150 185 L1200 230 L1200 420 L0 420 Z"
+    d="M0 270 C60 220, 120 250, 180 200 C240 160, 300 230, 360 190 C420 155, 480 230, 540 195 C600 165, 660 235, 720 190 C780 155, 840 225, 900 190 C960 160, 1020 230, 1080 195 C1140 165, 1180 220, 1200 205 L1200 420 L0 420 Z"
     fill="var(--text-primary)"
-    opacity="0.07"
+    opacity="0.08"
+    filter="url(#ink-blur-far)"
   />
   {/* 云雾 */}
   <rect x="0" y="205" width="1200" height="70" fill="url(#ink-mist)" />
-  {/* 中山：较浓的峰林，两座高耸的石峰 */}
+  {/* 中山：较浓的峰林，平滑曲线 + 中度模糊 */}
   <path
-    d="M0 285 L110 215 L190 275 L290 165 L380 270 L470 200 L560 280 L660 170 L750 275 L850 195 L950 280 L1050 175 L1140 265 L1200 220 L1200 420 L0 420 Z"
+    d="M0 290 C80 235, 150 275, 220 210 C290 155, 360 260, 430 205 C500 160, 570 265, 640 200 C710 150, 780 260, 850 205 C920 160, 990 265, 1060 210 C1130 165, 1180 240, 1200 225 L1200 420 L0 420 Z"
     fill="var(--text-primary)"
-    opacity="0.13"
+    opacity="0.14"
+    filter="url(#ink-blur-mid)"
   />
   {/* 云雾 */}
   <rect x="0" y="250" width="1200" height="60" fill="url(#ink-mist)" />
-  {/* 近岸：左右两团深色山脚 */}
+  {/* 近岸：左右两团深色山脚，轻微模糊 */}
   <path
-    d="M0 305 L120 272 L240 296 L310 282 L310 420 L0 420 Z"
+    d="M0 310 C80 285, 160 300, 240 282 C280 275, 300 280, 310 282 L310 420 L0 420 Z"
     fill="var(--text-primary)"
     opacity="0.2"
+    filter="url(#ink-blur-near)"
   />
   <path
-    d="M890 288 L1020 268 L1140 292 L1200 278 L1200 420 L890 420 Z"
+    d="M890 292 C960 275, 1040 290, 1120 278 C1160 272, 1180 276, 1200 272 L1200 420 L890 420 Z"
     fill="var(--text-primary)"
     opacity="0.2"
+    filter="url(#ink-blur-near)"
   />
   {/* 湖面 */}
   <rect x="0" y="285" width="1200" height="35" fill="var(--text-primary)" opacity="0.05" />
