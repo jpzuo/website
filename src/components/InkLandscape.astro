@@ -43,9 +43,9 @@ const { sun = true, class: className = '' } = Astro.props;
     fill="var(--text-primary)"
     opacity="0.22"
   />
-  {/* 飞鸟 */}
+  {/* 飞鸟：放在 slice 裁剪后仍可见的中部（y 约 150–170） */}
   <path
-    d="M300 92 q7 -7 14 0 q7 -7 14 0"
+    d="M300 160 q7 -7 14 0 q7 -7 14 0"
     stroke="var(--text-primary)"
     stroke-width="2"
     fill="none"
@@ -53,12 +53,12 @@ const { sun = true, class: className = '' } = Astro.props;
     opacity="0.5"
   />
   <path
-    d="M348 74 q6 -6 12 0 q6 -6 12 0"
+    d="M348 142 q6 -6 12 0 q6 -6 12 0"
     stroke="var(--text-primary)"
     stroke-width="2"
     fill="none"
     stroke-linecap="round"
     opacity="0.4"
   />
-  {sun && <circle cx="900" cy="100" r="26" fill="var(--accent)" opacity="0.9" />}
+  {sun && <circle cx="760" cy="180" r="26" fill="var(--accent)" opacity="0.9" />}
 </svg>
