@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
+import HeroParticles from '../components/HeroParticles.astro';
 import { readingLabel } from '../lib/reading-time';
 import { getCollection } from 'astro:content';
 import { ArrowRight, ArrowUpRight, BookOpen, Calendar, Clock } from '@lucide/astro';
@@ -34,7 +35,8 @@ const formatDate = (date: Date) => {
   <div>
     <!-- Hero -->
     <section class="relative overflow-hidden pt-6 pb-10 sm:pt-10 sm:pb-14">
-      <span aria-hidden="true" class="pointer-events-none select-none absolute -right-2 -top-8 hidden font-serif-heading text-[11rem] font-bold leading-none text-[var(--text-primary)] opacity-[0.04] sm:block">ZUO</span>
+      <HeroParticles />
+      <span id="hero-watermark" aria-hidden="true" class="hero-watermark pointer-events-none select-none absolute -right-2 -top-8 hidden font-serif-heading text-[11rem] font-bold leading-none sm:block">ZUO</span>
       <p class="reveal font-mono-code text-xs tracking-[0.2em] uppercase text-[var(--accent)]">
         你好，我是 ZUO · 全栈工程师
       </p>
@@ -47,14 +49,14 @@ const formatDate = (date: Date) => {
       <div class="reveal mt-7 flex flex-wrap items-center gap-3" style="transition-delay:180ms">
         <a
           href={`${base}projects`}
-          class="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-medium text-white shadow-sm transition-colors hover:bg-[var(--accent-hover)]"
+          class="inline-flex items-center gap-2 rounded-full bg-[var(--accent)] px-6 py-3 text-sm font-medium text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[var(--accent-hover)] hover:shadow-md active:translate-y-0 active:scale-[0.98]"
         >
           看看我的作品
           <ArrowUpRight class="w-4 h-4" />
         </a>
         <a
           href={`${base}blog`}
-          class="inline-flex items-center gap-2 rounded-full border border-[var(--border-color)] bg-[var(--bg-surface)] px-6 py-3 text-sm font-medium text-[var(--text-primary)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+          class="inline-flex items-center gap-2 rounded-full border border-[var(--border-color)] bg-[var(--bg-surface)] px-6 py-3 text-sm font-medium text-[var(--text-primary)] transition-all duration-200 hover:-translate-y-0.5 hover:border-[var(--accent)] hover:text-[var(--accent)] hover:shadow-md active:translate-y-0 active:scale-[0.98]"
         >
           读最新文章
           <ArrowRight class="w-4 h-4" />
@@ -64,23 +66,35 @@ const formatDate = (date: Date) => {
         <div>
           <dt class="sr-only">文章数</dt>
           <dd class="font-serif-heading text-2xl font-bold text-[var(--text-primary)]">
-            {allPosts.length}<span class="ml-1 text-sm font-medium text-[var(--text-muted)]">篇手记</span>
+            <span data-count={allPosts.length}>0</span><span class="ml-1 text-sm font-medium text-[var(--text-muted)]">篇手记</span>
           </dd>
         </div>
         <div>
           <dt class="sr-only">作品数</dt>
           <dd class="font-serif-heading text-2xl font-bold text-[var(--text-primary)]">
-            {allProjects.length}<span class="ml-1 text-sm font-medium text-[var(--text-muted)]">个作品</span>
+            <span data-count={allProjects.length}>0</span><span class="ml-1 text-sm font-medium text-[var(--text-muted)]">个作品</span>
           </dd>
         </div>
         <div>
           <dt class="sr-only">持续写作</dt>
           <dd class="font-serif-heading text-2xl font-bold text-[var(--text-primary)]">
-            {yearsWriting}<span class="ml-1 text-sm font-medium text-[var(--text-muted)]">年持续写作</span>
+            <span data-count={yearsWriting}>0</span><span class="ml-1 text-sm font-medium text-[var(--text-muted)]">年持续写作</span>
           </dd>
         </div>
       </dl>
     </section>
+
+    <!-- Tech Marquee -->
+    <div class="marquee -mx-4 overflow-hidden border-y border-[var(--border-color)] py-3 sm:-mx-6" aria-hidden="true">
+      <div class="marquee-track flex w-max items-center">
+        {[...['TypeScript', 'Go', 'Rust', 'Astro', 'React', 'Vue', 'Tailwind CSS', 'Node.js', 'PostgreSQL', 'Redis', 'Kafka', 'Docker', 'Kubernetes', 'GitHub Actions', 'i18n', 'Obsidian'], ...['TypeScript', 'Go', 'Rust', 'Astro', 'React', 'Vue', 'Tailwind CSS', 'Node.js', 'PostgreSQL', 'Redis', 'Kafka', 'Docker', 'Kubernetes', 'GitHub Actions', 'i18n', 'Obsidian']].map((k) => (
+          <span class="flex items-center">
+            <span class="px-4 font-mono-code text-xs tracking-wide whitespace-nowrap text-[var(--text-muted)]">{k}</span>
+            <span class="text-[var(--accent)] text-[10px]">✦</span>
+          </span>
+        ))}
+      </div>
+    </div>
 
     <!-- Featured Works -->
     {featuredProjects.length > 0 && (
