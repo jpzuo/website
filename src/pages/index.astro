@@ -34,7 +34,8 @@ const formatDate = (date: Date) => {
 <Layout>
   <div>
     <!-- Hero: 画卷式首屏 -->
-    <section class="relative overflow-hidden pt-6 sm:pt-10">
+    {/* 注意：这里不能加 overflow-hidden，否则通幅山水的 bleed 会被裁回窄栏 */}
+    <section class="relative pt-6 sm:pt-10">
       <HeroParticles />
       <span id="hero-watermark" aria-hidden="true" class="hero-watermark pointer-events-none select-none absolute -right-2 -top-8 hidden font-serif-heading text-[11rem] font-bold leading-none sm:block">ZUO</span>
       <div class="relative">
