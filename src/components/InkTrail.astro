@@ -1,0 +1,115 @@
+---
+/*
+ * InkTrail — 落墨：鼠标划过页面，留下一道淡墨痕，几秒后化开消失。
+ * 只在细指针设备（鼠标）上启用；系统设了「减弱动效」时不启用。
+ * 画布 fixed 全屏、pointer-events: none，不拦截任何点击。
+ */
+---
+
+<canvas id="ink-trail" class="pointer-events-none fixed inset-0 z-[70]" aria-hidden="true"></canvas>
+
+<script is:inline>
+  (function () {
+    var finePointer = window.matchMedia('(pointer: fine)').matches;
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (!finePointer || reduceMotion) return;
+
+    var canvas = document.getElementById('ink-trail');
+    if (!canvas) return;
+    var ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    function resize() {
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      canvas.style.width = window.innerWidth + 'px';
+      canvas.style.height = window.innerHeight + 'px';
+    }
+    resize();
+    window.addEventListener('resize', resize);
+
+    // 墨色取自当前主题的正文色，深色模式下也看得见
+    var ink = '28,26,23';
+    try {
+      var raw = getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim();
+      var m = raw.match(/^#([0-9a-f]{6})$/i);
+      if (m) {
+        ink = parseInt(m[1].slice(0, 2), 16) + ',' + parseInt(m[1].slice(2, 4), 16) + ',' + parseInt(m[1].slice(4, 6), 16);
+      }
+    } catch (e) { /* 保持默认墨色 */ }
+
+    // 预渲染一枚柔边墨点，绘制时直接贴图，比每帧画渐变快得多
+    var sprite = document.createElement('canvas');
+    sprite.width = 64;
+    sprite.height = 64;
+    var sctx = sprite.getContext('2d');
+    var g = sctx.createRadialGradient(32, 32, 0, 32, 32, 32);
+    g.addColorStop(0, 'rgba(' + ink + ',0.55)');
+    g.addColorStop(0.5, 'rgba(' + ink + ',0.22)');
+    g.addColorStop(1, 'rgba(' + ink + ',0)');
+    sctx.fillStyle = g;
+    sctx.fillRect(0, 0, 64, 64);
+
+    var dots = [];
+    var MAX_DOTS = 350;
+    var lastX = -999, lastY = -999;
+    var running = false;
+
+    function spawn(x, y, big) {
+      if (dots.length >= MAX_DOTS) dots.shift();
+      dots.push({
+        x: x, y: y,
+        r: (big ? 9 : 4) + Math.random() * 6,
+        a: big ? 0.6 : 0.45
+      });
+    }
+
+    function tick() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.scale(dpr, dpr);
+      for (var i = dots.length - 1; i >= 0; i--) {
+        var d = dots[i];
+        d.r += 0.25;       // 墨痕慢慢洇开
+        d.a *= 0.982;      // 同时慢慢淡去
+        if (d.a < 0.02 || d.r > 46) {
+          dots.splice(i, 1);
+          continue;
+        }
+        ctx.globalAlpha = d.a;
+        ctx.drawImage(sprite, d.x - d.r, d.y - d.r, d.r * 2, d.r * 2);
+      }
+      ctx.restore();
+      if (dots.length) {
+        requestAnimationFrame(tick);
+      } else {
+        running = false;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    function kick() {
+      if (!running) {
+        running = true;
+        requestAnimationFrame(tick);
+      }
+    }
+
+    window.addEventListener('pointermove', function (e) {
+      var dx = e.clientX - lastX, dy = e.clientY - lastY;
+      if (dx * dx + dy * dy < 36) return; // 移动不到 6px 不落墨
+      lastX = e.clientX;
+      lastY = e.clientY;
+      spawn(e.clientX, e.clientY, false);
+      kick();
+    }, { passive: true });
+
+    window.addEventListener('pointerdown', function (e) {
+      lastX = e.clientX;
+      lastY = e.clientY;
+      spawn(e.clientX, e.clientY, true);
+      kick();
+    }, { passive: true });
+  })();
+</script>
