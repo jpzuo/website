@@ -35,10 +35,10 @@
       var W = 0, H = 0, parts = [], blots = [], mouse = { x: -9999, y: -9999 };
       var running = false, rafId = 0, visible = true, io = null;
 
-      // 从站点配色取墨色与朱红，避免写死色值导致深色模式失调
+      // 从站点配色取墨色与印泥红，避免写死色值导致深色模式失调
       var cs = getComputedStyle(document.documentElement);
       var ink = (cs.getPropertyValue('--text-primary') || '#1C1A17').trim();
-      var seal = (cs.getPropertyValue('--accent') || '#B03A2E').trim();
+      var seal = (cs.getPropertyValue('--seal') || '#B03A2E').trim();
 
       function resize() {
         var rect = hero.getBoundingClientRect();

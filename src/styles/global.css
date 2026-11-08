@@ -3,22 +3,23 @@
 
 @layer base {
   :root {
-    /* 水墨风：宣纸底、墨色字、朱红印 */
-    --bg-page: #F6F1E7;
-    --bg-surface: #FDFBF5;
-    --bg-surface-soft: #EFE9DB;
+    /* 湖山水墨：冷白宣纸、墨色字，朱红只留给印章 */
+    --bg-page: #FAF9F6;
+    --bg-surface: #FDFDFB;
+    --bg-surface-soft: #F0EEE9;
     --text-primary: #1C1A17;
-    --text-secondary: #57534A;
-    --text-muted: #8A8272;
-    --border-color: #E2DAC7;
-    --border-hover: #C9BFA6;
-    --accent: #B03A2E;
-    --accent-hover: #8E2E24;
-    --accent-soft: rgba(176, 58, 46, 0.08);
+    --text-secondary: #55524B;
+    --text-muted: #8A8781;
+    --border-color: #E3E1DC;
+    --border-hover: #C6C4BE;
+    --accent: #1C1A17;
+    --accent-hover: #000000;
+    --accent-soft: rgba(28, 26, 23, 0.07);
+    --seal: #B03A2E;
   }
 
   .dark {
-    /* 深色模式：浓墨底、淡墨字、朱红印 */
+    /* 深色模式：浓墨底、淡墨字，朱红只留给印章 */
     --bg-page: #16130F;
     --bg-surface: #1E1A15;
     --bg-surface-soft: #262119;
@@ -27,9 +28,10 @@
     --text-muted: #7D7666;
     --border-color: #2E2820;
     --border-hover: #453D2F;
-    --accent: #D96A58;
-    --accent-hover: #E8846F;
-    --accent-soft: rgba(217, 106, 88, 0.12);
+    --accent: #E9E3D6;
+    --accent-hover: #FFFFFF;
+    --accent-soft: rgba(233, 227, 214, 0.12);
+    --seal: #D96A58;
   }
 
   html {
@@ -113,12 +115,12 @@ pre.astro-code {
   opacity: 0.08;
 }
 
-/* 印章：朱红底 + 白字，略带刻印感的内框 */
+/* 印章：朱红底 + 白字，略带刻印感的内框（全站唯一的朱红） */
 .seal {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: var(--accent);
+  background: var(--seal);
   color: #FDFBF5;
   font-family: "Noto Serif SC", "Songti SC", serif;
   font-weight: 700;
