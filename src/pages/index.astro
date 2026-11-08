@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import HeroParticles from '../components/HeroParticles.astro';
+import InkMountains from '../components/InkMountains.astro';
 import { readingLabel } from '../lib/reading-time';
 import { getCollection } from 'astro:content';
 import { ArrowRight, ArrowUpRight, BookOpen, Calendar, Clock } from '@lucide/astro';
@@ -37,11 +38,7 @@ const formatDate = (date: Date) => {
     <section class="relative overflow-hidden pt-6 pb-10 sm:pt-10 sm:pb-14">
       <HeroParticles />
       {/* 远山剪影：两层淡墨山峦 + 一轮朱红日 */}
-      <svg aria-hidden="true" class="pointer-events-none absolute inset-x-0 bottom-0 h-36 w-full" preserveAspectRatio="none" viewBox="0 0 800 120">
-        <path d="M0 90 L90 45 L170 85 L260 30 L350 80 L430 50 L520 88 L620 40 L700 82 L800 55 L800 120 L0 120 Z" fill="var(--text-primary)" opacity="0.05" />
-        <path d="M0 105 L120 70 L230 100 L340 62 L470 102 L580 72 L690 100 L800 78 L800 120 L0 120 Z" fill="var(--text-primary)" opacity="0.08" />
-        <circle cx="668" cy="34" r="13" fill="var(--accent)" opacity="0.85" />
-      </svg>
+      <InkMountains variant="hero" class="absolute inset-x-0 bottom-0 h-44" />
       <span id="hero-watermark" aria-hidden="true" class="hero-watermark pointer-events-none select-none absolute -right-2 -top-8 hidden font-serif-heading text-[11rem] font-bold leading-none sm:block">ZUO</span>
       {/* 右侧竖排题字 + 印章（桌面端） */}
       <div aria-hidden="true" class="pointer-events-none absolute right-2 top-44 hidden select-none flex-col items-center gap-4 lg:flex">

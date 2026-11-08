@@ -55,7 +55,7 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
         </div>
 
         <!-- Article Header -->
-        <header class="pb-8 border-b border-[var(--border-color)]">
+        <header class="pb-8">
           <div class="flex items-center gap-3 mb-4">
             <span class="px-2.5 py-0.5 rounded text-xs font-serif-heading font-medium bg-[var(--accent-soft)] text-[var(--accent)]">
               {category}
@@ -96,11 +96,12 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
               ))}
             </div>
           )}
+          <span aria-hidden="true" class="brush-line mt-8"></span>
         </header>
 
         <!-- Mobile TOC (collapsible, below lg) -->
         {tocHeadings.length > 0 && (
-          <details class="lg:hidden mb-8 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)]">
+          <details class="lg:hidden mb-8 rounded-md ink-frame bg-[var(--bg-surface)]">
             <summary class="px-4 py-3 text-sm font-serif-heading font-bold text-[var(--text-primary)] cursor-pointer list-none flex items-center justify-between">
               <span>文章目录（{tocHeadings.length} 节）</span>
               <span class="text-[var(--text-muted)] text-xs">展开 ▾</span>
@@ -122,7 +123,7 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
         )}
 
         <!-- Article Body -->
-        <div class="mt-8 prose dark:prose-invert prose-stone max-w-none prose-headings:font-serif-heading prose-headings:font-bold prose-headings:tracking-tight prose-a:text-[var(--accent)] prose-a:underline hover:prose-a:text-[var(--accent-hover)] prose-blockquote:border-l-[var(--accent)] prose-blockquote:font-serif-heading prose-blockquote:italic prose-pre:my-6 prose-pre:rounded-xl leading-relaxed">
+        <div class="ink-dropcap mt-8 prose dark:prose-invert prose-stone max-w-none prose-headings:font-serif-heading prose-headings:font-bold prose-headings:tracking-tight prose-a:text-[var(--accent)] prose-a:underline hover:prose-a:text-[var(--accent-hover)] prose-blockquote:border-l-[var(--accent)] prose-blockquote:font-serif-heading prose-blockquote:italic prose-pre:my-6 prose-pre:rounded-xl leading-relaxed">
           <slot />
         </div>
 
@@ -132,7 +133,7 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
             {prevPost ? (
               <a
                 href={prevPost.href}
-                class="group rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)] p-4 hover:border-[var(--accent)] transition-colors"
+                class="group rounded-md ink-frame bg-[var(--bg-surface)] p-4 hover:border-[var(--accent)] transition-colors"
               >
                 <span class="block text-[11px] font-mono-code text-[var(--text-muted)] mb-1">← 上一篇 · 更新的文章</span>
                 <span class="font-serif-heading font-bold text-sm text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors line-clamp-2">
@@ -145,7 +146,7 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
             {nextPost ? (
               <a
                 href={nextPost.href}
-                class="group rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)] p-4 text-right hover:border-[var(--accent)] transition-colors"
+                class="group rounded-md ink-frame bg-[var(--bg-surface)] p-4 text-right hover:border-[var(--accent)] transition-colors"
               >
                 <span class="block text-[11px] font-mono-code text-[var(--text-muted)] mb-1">下一篇 · 更早的文章 →</span>
                 <span class="font-serif-heading font-bold text-sm text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors line-clamp-2">
@@ -176,10 +177,11 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
       <!-- Sidebar / Table of Contents (TOC) -->
       {tocHeadings.length > 0 && (
         <aside class="hidden lg:block lg:col-span-1">
-          <div class="sticky top-24 p-4 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)]">
+          <div class="sticky top-24 p-4 rounded-md ink-frame bg-[var(--bg-surface)]">
             <h2 class="font-serif-heading text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-3">
               文章目录
             </h2>
+            <span aria-hidden="true" class="brush-line mb-3"></span>
             <nav class="space-y-1.5 text-xs">
               {tocHeadings.map((h) => (
                 <a

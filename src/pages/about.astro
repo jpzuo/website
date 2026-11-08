@@ -55,15 +55,18 @@ const usesList = [
 >
   <div class="space-y-14">
     <!-- Header / Bio -->
-    <section class="pb-10 border-b border-[var(--border-color)]">
+    <section class="pb-10">
       <div class="inline-flex items-center gap-2 text-xs font-serif-heading font-medium text-[var(--accent)] bg-[var(--accent-soft)] px-2.5 py-1 rounded-full mb-4">
         <User class="w-3.5 h-3.5" />
         <span>关于我 · Biography</span>
       </div>
 
-      <h1 class="font-serif-heading text-3xl sm:text-4xl font-bold tracking-tight text-[var(--text-primary)]">
-        你好，我是 ZUO
-      </h1>
+      <div class="flex items-start gap-5">
+        <h1 class="font-serif-heading text-3xl sm:text-4xl font-bold tracking-tight text-[var(--text-primary)]">
+          你好，我是 ZUO
+        </h1>
+        <span aria-hidden="true" class="seal mt-1 hidden h-10 w-10 shrink-0 text-lg sm:inline-flex">左</span>
+      </div>
 
       <p class="mt-4 text-base sm:text-lg text-[var(--text-secondary)] leading-relaxed font-serif-heading">
         一名追求极致工程品质与排版美学的全栈开发者。
@@ -77,6 +80,7 @@ const usesList = [
           业余时间，我喜欢使用 <strong>Obsidian</strong> 沉淀思考，构建属于自己的第二大脑，并将打磨成熟的技术洞见与架构总结分享于独立博客中。
         </p>
       </div>
+      <span aria-hidden="true" class="brush-line mt-8"></span>
 
       <!-- Quick Contact & Socials -->
       <div class="mt-8 flex flex-wrap items-center gap-4 text-xs font-mono-code">
@@ -105,17 +109,18 @@ const usesList = [
 
     <!-- Experience Timeline -->
     <section>
-      <div class="flex items-center gap-2 mb-6">
+      <div class="flex items-center gap-2 mb-3">
         <Briefcase class="w-4 h-4 text-[var(--accent)]" />
         <h2 class="font-serif-heading text-xl font-bold text-[var(--text-primary)]">
           职业经历 (Experience)
         </h2>
       </div>
+      <span aria-hidden="true" class="brush-line mb-6"></span>
 
       <div class="relative pl-6 border-l border-[var(--border-color)] space-y-8">
         {experiences.map((exp) => (
           <div class="relative group">
-            <span class="absolute -left-[31px] top-1.5 w-2.5 h-2.5 rounded-full bg-[var(--border-color)] group-hover:bg-[var(--accent)] transition-colors ring-4 ring-[var(--bg-page)]" />
+            <span class="absolute -left-[31px] top-1.5 w-2.5 h-2.5 rounded-full bg-[var(--text-primary)] group-hover:bg-[var(--accent)] transition-colors ring-4 ring-[var(--bg-page)]" />
             <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
               <h3 class="font-serif-heading font-bold text-base text-[var(--text-primary)]">
                 {exp.role} · <span class="text-[var(--accent)]">{exp.company}</span>
@@ -134,14 +139,15 @@ const usesList = [
 
     <!-- Education -->
     <section>
-      <div class="flex items-center gap-2 mb-6">
+      <div class="flex items-center gap-2 mb-3">
         <GraduationCap class="w-4 h-4 text-[var(--accent)]" />
         <h2 class="font-serif-heading text-xl font-bold text-[var(--text-primary)]">
           教育背景 (Education)
         </h2>
       </div>
+      <span aria-hidden="true" class="brush-line mb-6"></span>
 
-      <div class="p-5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)] flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+      <div class="p-5 rounded-md ink-frame bg-[var(--bg-surface)] flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
         <div>
           <h3 class="font-serif-heading font-bold text-base text-[var(--text-primary)]">
             计算机科学与技术 · 工学学士
@@ -156,16 +162,17 @@ const usesList = [
 
     <!-- Tech Stack Matrix -->
     <section>
-      <div class="flex items-center gap-2 mb-6">
+      <div class="flex items-center gap-2 mb-3">
         <Compass class="w-4 h-4 text-[var(--accent)]" />
         <h2 class="font-serif-heading text-xl font-bold text-[var(--text-primary)]">
           技能罗盘 (Tech Stack)
         </h2>
       </div>
+      <span aria-hidden="true" class="brush-line mb-6"></span>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {skillCategories.map((cat) => (
-          <div class="p-5 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface)]">
+          <div class="p-5 rounded-md ink-frame bg-[var(--bg-surface)]">
             <h3 class="font-serif-heading font-bold text-sm text-[var(--text-primary)] mb-3">
               {cat.name}
             </h3>
@@ -182,13 +189,14 @@ const usesList = [
     </section>
 
     <!-- Uses / Setup -->
-    <section class="p-6 rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface-soft)]">
-      <div class="flex items-center gap-2 mb-4">
+    <section class="p-6 rounded-md ink-frame bg-[var(--bg-surface-soft)]">
+      <div class="flex items-center gap-2 mb-3">
         <Wrench class="w-4 h-4 text-[var(--accent)]" />
         <h2 class="font-serif-heading text-lg font-bold text-[var(--text-primary)]">
           我的装备与生产力工具 (Uses)
         </h2>
       </div>
+      <span aria-hidden="true" class="brush-line mb-4"></span>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
         {usesList.map((use) => (
