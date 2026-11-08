@@ -1,6 +1,6 @@
 ---
 import InkMountains from './InkMountains.astro';
-// 文章封面：水墨画——按分类配不同深浅的墨色晕染 + 远山剪影 + 朱红日 + 分类大字。
+// 文章封面：水墨画——按分类配不同深浅的墨色晕染 + 远山剪影 + 分类大字。
 // 纯 CSS/SVG 渲染，无图片文件，34 篇文章自动全覆盖。
 interface Props {
   category: string;
@@ -28,7 +28,7 @@ const gradient = `linear-gradient(135deg, ${palette.from} 0%, ${palette.to} 100%
     class="relative overflow-hidden rounded-xl text-white"
     style={`background: ${gradient};`}
   >
-    {/* 水墨画：远山 + 朱红日 + 大字 */}
+    {/* 水墨画：远山 + 大字 */}
     <InkMountains variant="hero" tone="paper" class="absolute inset-x-0 bottom-0 h-28" />
     <span
       aria-hidden="true"
@@ -43,7 +43,7 @@ const gradient = `linear-gradient(135deg, ${palette.from} 0%, ${palette.to} 100%
       ZUO
     </span>
     <div class="relative px-6 py-10 sm:px-10 sm:py-12">
-      <span class="inline-block rounded-sm bg-[var(--accent)] px-2.5 py-1 text-xs font-medium text-white">
+      <span class="inline-block rounded-sm bg-[var(--seal)] px-2.5 py-1 text-xs font-medium text-white">
         {category}
       </span>
     </div>
@@ -60,7 +60,7 @@ const gradient = `linear-gradient(135deg, ${palette.from} 0%, ${palette.to} 100%
     class="relative flex h-full w-full shrink-0 items-center justify-center overflow-hidden rounded-xl text-white"
     style={`background: ${gradient};`}
   >
-    {/* 底部小远山 + 朱红日 */}
+    {/* 底部小远山 */}
     <InkMountains variant="strip" tone="paper" class="absolute inset-x-0 bottom-0 h-10" />
     <span
       aria-hidden="true"
@@ -74,7 +74,7 @@ const gradient = `linear-gradient(135deg, ${palette.from} 0%, ${palette.to} 100%
     {/* 左上角朱红印点 */}
     <span
       aria-hidden="true"
-      class="pointer-events-none absolute left-2 top-2 h-2.5 w-2.5 rounded-[2px] bg-[var(--accent)] opacity-90"
+      class="pointer-events-none absolute left-2 top-2 h-2.5 w-2.5 rounded-[2px] bg-[var(--seal)] opacity-90"
     />
   </div>
 )}
