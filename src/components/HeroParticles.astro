@@ -239,8 +239,19 @@
       }
     }
 
-    initParticles();
-    initParallax();
-    initCountUp();
+    // 注意：脚本在解析到组件位置时就执行，此时水印 span 与统计数字
+    // 还没解析出来（它们在组件之后），必须等 DOM 解析完再初始化，
+    // 否则数字滚动找不到 [data-count]、视差找不到 #hero-watermark。
+    // 页面切换回来时脚本会重跑，readyState 已是 complete，直接初始化。
+    function boot() {
+      initParticles();
+      initParallax();
+      initCountUp();
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', boot, { once: true });
+    } else {
+      boot();
+    }
   })();
 </script>
