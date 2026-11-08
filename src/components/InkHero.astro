@@ -1,0 +1,103 @@
+---
+// 首屏满幅山水：竖构图湖山水墨画，用作 Hero 的整屏背景。
+// 上部是空天与薄雾（文案压在这里），中部是两层峰林，
+// 下部是湖面与湖心小船。纯墨色，无红日；山体用平滑曲线 +
+// 高斯模糊化入雾中，小船、水榭、飞鸟保持清晰。
+// 构图取 slice 安全带：小船与飞鸟集中在 x 355–845、y 280–690，
+// 16:9、21:9 与竖屏手机下都能完整呈现。
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<svg
+  aria-hidden="true"
+  class={`pointer-events-none w-full ${className}`}
+  preserveAspectRatio="xMidYMid slice"
+  viewBox="0 0 1200 800"
+>
+  <defs>
+    <linearGradient id="ink-hero-mist" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--bg-page)" stop-opacity="0" />
+      <stop offset="50%" stop-color="var(--bg-page)" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="var(--bg-page)" stop-opacity="0" />
+    </linearGradient>
+    <filter id="ink-hero-blur-far" x="-5%" y="-20%" width="110%" height="140%">
+      <feGaussianBlur stdDeviation="12" />
+    </filter>
+    <filter id="ink-hero-blur-mid" x="-5%" y="-20%" width="110%" height="140%">
+      <feGaussianBlur stdDeviation="8" />
+    </filter>
+    <filter id="ink-hero-blur-near" x="-5%" y="-20%" width="110%" height="140%">
+      <feGaussianBlur stdDeviation="4" />
+    </filter>
+  </defs>
+  {/* 远山：淡墨峰林，平滑曲线 + 强模糊 */}
+  <path
+    d="M0 470 C80 400, 150 440, 220 370 C290 310, 360 430, 430 360 C500 300, 570 430, 640 370 C710 315, 780 425, 850 365 C920 310, 990 430, 1060 370 C1130 320, 1180 400, 1200 380 L1200 800 L0 800 Z"
+    fill="var(--text-primary)"
+    opacity="0.08"
+    filter="url(#ink-hero-blur-far)"
+  />
+  {/* 云雾 */}
+  <rect x="0" y="420" width="1200" height="90" fill="url(#ink-hero-mist)" />
+  {/* 中山：较浓的峰林，平滑曲线 + 中度模糊 */}
+  <path
+    d="M0 600 C90 520, 160 560, 240 480 C320 410, 400 560, 470 480 C540 415, 620 565, 690 485 C760 420, 840 560, 910 480 C980 415, 1060 555, 1130 480 C1170 440, 1190 470, 1200 460 L1200 800 L0 800 Z"
+    fill="var(--text-primary)"
+    opacity="0.14"
+    filter="url(#ink-hero-blur-mid)"
+  />
+  {/* 云雾 */}
+  <rect x="0" y="540" width="1200" height="80" fill="url(#ink-hero-mist)" />
+  {/* 近岸：左右两团深色山脚，轻微模糊 */}
+  <path
+    d="M0 680 C90 620, 180 660, 260 630 C300 618, 320 622, 340 626 L340 800 L0 800 Z"
+    fill="var(--text-primary)"
+    opacity="0.2"
+    filter="url(#ink-hero-blur-near)"
+  />
+  <path
+    d="M860 640 C940 615, 1030 645, 1110 625 C1150 616, 1180 620, 1200 615 L1200 800 L860 800 Z"
+    fill="var(--text-primary)"
+    opacity="0.2"
+    filter="url(#ink-hero-blur-near)"
+  />
+  {/* 湖面 */}
+  <rect x="0" y="620" width="1200" height="120" fill="var(--text-primary)" opacity="0.05" />
+  {/* 湖面倒影：横向淡痕 */}
+  <ellipse cx="430" cy="690" rx="110" ry="5" fill="var(--text-primary)" opacity="0.06" />
+  <ellipse cx="740" cy="705" rx="140" ry="6" fill="var(--text-primary)" opacity="0.06" />
+  <ellipse cx="980" cy="685" rx="90" ry="5" fill="var(--text-primary)" opacity="0.06" />
+  {/* 水榭（左岸小亭） */}
+  <g stroke="var(--text-primary)" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.55">
+    <path d="M182 622 L200 606 L218 622" />
+    <path d="M188 622 L188 636 M200 620 L200 636 M212 622 L212 636" />
+  </g>
+  {/* 湖心小船：船身 + 舱亭 + 倒影 */}
+  <g fill="var(--text-primary)" opacity="0.75">
+    <path d="M550 660 Q600 674 650 660 L644 652 L556 652 Z" />
+    <rect x="584" y="632" width="32" height="20" />
+    <path d="M578 633 Q600 616 622 633 Z" />
+  </g>
+  <path d="M562 684 Q600 694 638 684" stroke="var(--text-primary)" stroke-width="2.5" fill="none" opacity="0.12" />
+  {/* 飞鸟 */}
+  <path
+    d="M480 298 q7 -7 14 0 q7 -7 14 0"
+    stroke="var(--text-primary)"
+    stroke-width="2"
+    fill="none"
+    stroke-linecap="round"
+    opacity="0.5"
+  />
+  <path
+    d="M760 288 q6 -6 12 0 q6 -6 12 0"
+    stroke="var(--text-primary)"
+    stroke-width="2"
+    fill="none"
+    stroke-linecap="round"
+    opacity="0.4"
+  />
+</svg>
