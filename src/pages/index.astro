@@ -200,7 +200,9 @@ const formatDate = (date: Date) => {
     }
   </style>
 
-  {/* 数字滚动：原先在 HeroParticles 里，星图去掉后单独保留在这里 */}
+  {/* 数字滚动：原先在 HeroParticles 里，星图去掉后单独保留在这里。
+       切页是无刷新切换（ClientRouter），只跑一次的启动在回首页时不会再跑，
+       数字会一直停在 0，所以每次 astro:page-load 都重新启动。 */}
   <script is:inline>
     (function () {
       var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -237,10 +239,19 @@ const formatDate = (date: Date) => {
           els.forEach(animate);
         }
       }
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', boot, { once: true });
+      function bootWhenReady() {
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', boot, { once: true });
+        } else {
+          boot();
+        }
+      }
+      if (window.__countUpWired) {
+        bootWhenReady();
       } else {
-        boot();
+        window.__countUpWired = true;
+        bootWhenReady();
+        document.addEventListener('astro:page-load', boot);
       }
     })();
   </script>
