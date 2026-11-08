@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import InkLandscape from '../../components/InkLandscape.astro';
 import { readingLabel } from '../../lib/reading-time';
 import { getCollection } from 'astro:content';
 import { Calendar, Archive } from '@lucide/astro';
@@ -46,6 +47,11 @@ const formatDate = (date: Date) => {
       <span aria-hidden="true" class="brush-line"></span>
       <span aria-hidden="true" class="seal h-8 w-8 text-sm">档</span>
     </div>
+  </div>
+
+  {/* 通幅山水 */}
+  <div class="bleed relative -mt-2 mb-12">
+    <InkLandscape class="h-40 sm:h-48" />
   </div>
 
   <div class="space-y-12">

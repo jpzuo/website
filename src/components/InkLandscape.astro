@@ -1,0 +1,64 @@
+---
+// 全幅水墨山水：三层远山 + 云雾 + 一轮朱红日 + 飞鸟。
+// 用于首页首屏与各栏目页的通幅画卷；用 slice 裁剪适配任意高度。
+interface Props {
+  sun?: boolean;
+  class?: string;
+}
+
+const { sun = true, class: className = '' } = Astro.props;
+---
+
+<svg
+  aria-hidden="true"
+  class={`pointer-events-none w-full ${className}`}
+  preserveAspectRatio="xMidYMid slice"
+  viewBox="0 0 1200 420"
+>
+  <defs>
+    <linearGradient id="ink-mist" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="var(--bg-page)" stop-opacity="0" />
+      <stop offset="50%" stop-color="var(--bg-page)" stop-opacity="0.55" />
+      <stop offset="100%" stop-color="var(--bg-page)" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  {/* 远山 */}
+  <path
+    d="M0 240 L120 180 L220 230 L340 160 L470 235 L600 175 L730 240 L860 170 L980 235 L1100 185 L1200 230 L1200 420 L0 420 Z"
+    fill="var(--text-primary)"
+    opacity="0.08"
+  />
+  {/* 中山 */}
+  <path
+    d="M0 300 L150 230 L280 290 L430 210 L580 295 L720 225 L880 300 L1020 235 L1200 295 L1200 420 L0 420 Z"
+    fill="var(--text-primary)"
+    opacity="0.14"
+  />
+  {/* 云雾 */}
+  <rect x="0" y="205" width="1200" height="70" fill="url(#ink-mist)" />
+  <rect x="0" y="285" width="1200" height="60" fill="url(#ink-mist)" />
+  {/* 近山 */}
+  <path
+    d="M0 360 L180 280 L360 350 L540 270 L720 355 L900 285 L1080 350 L1200 310 L1200 420 L0 420 Z"
+    fill="var(--text-primary)"
+    opacity="0.22"
+  />
+  {/* 飞鸟 */}
+  <path
+    d="M300 92 q7 -7 14 0 q7 -7 14 0"
+    stroke="var(--text-primary)"
+    stroke-width="2"
+    fill="none"
+    stroke-linecap="round"
+    opacity="0.5"
+  />
+  <path
+    d="M348 74 q6 -6 12 0 q6 -6 12 0"
+    stroke="var(--text-primary)"
+    stroke-width="2"
+    fill="none"
+    stroke-linecap="round"
+    opacity="0.4"
+  />
+  {sun && <circle cx="900" cy="100" r="26" fill="var(--accent)" opacity="0.9" />}
+</svg>

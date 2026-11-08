@@ -1,5 +1,5 @@
 ---
-import { ArrowUpRight, Sparkles, Building, CodeXml, Download } from '@lucide/astro';
+import { ArrowUpRight, Download } from '@lucide/astro';
 import Github from './icons/Github.astro';
 
 interface Props {
@@ -18,107 +18,81 @@ const { slug, title, description, type, techStack, github, demo, download, featu
 const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
 const downloadUrl = download ? `${base}${download.replace(/^\//, '')}` : undefined;
 
-const typeConfig = {
-  commercial: {
-    label: '上线 / 商业产品',
-    bg: 'bg-[var(--bg-surface-soft)] text-[var(--text-secondary)] border-[var(--border-color)]',
-    icon: Building,
-  },
-  opensource: {
-    label: '开源工具',
-    bg: 'bg-[var(--bg-surface-soft)] text-[var(--text-secondary)] border-[var(--border-color)]',
-    icon: CodeXml,
-  },
-  experiment: {
-    label: '实验探索',
-    bg: 'bg-[var(--accent-soft)] text-[var(--accent)] border-[var(--accent)]/30',
-    icon: Sparkles,
-  },
-};
-
-const currentType = typeConfig[type] || typeConfig.opensource;
-const TypeIcon = currentType.icon;
+const typeLabel = {
+  commercial: '上线 / 商业产品',
+  opensource: '开源工具',
+  experiment: '实验探索',
+}[type] || '开源工具';
 ---
 
-<div class={`group relative p-6 rounded-md ink-frame bg-[var(--bg-surface)] hover:-translate-y-1 hover:border-[var(--accent)] hover:shadow-lg transition-all duration-200 flex flex-col justify-between ${featured ? 'ring-1 ring-[var(--accent)]/30' : ''}`}>
-  <div>
-    <!-- Top Meta: Type badge & Featured tag -->
-    <div class="flex items-center justify-between gap-2 mb-3">
-      <span class={`inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border ${currentType.bg}`}>
-        <TypeIcon class="w-3.5 h-3.5" />
-        {currentType.label}
-      </span>
-      {featured && (
-        <span class="text-xs font-serif-heading font-medium text-[var(--accent)] bg-[var(--accent-soft)] px-2 py-0.5 rounded">
-          精选成果
-        </span>
-      )}
-    </div>
-
-    <!-- Title -->
-    <h3 class="font-serif-heading text-lg font-bold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors tracking-tight">
-      {slug ? <a href={`${base}projects/${slug}`}>{title}</a> : title}
-    </h3>
-
-    <!-- Description -->
-    <p class="mt-2 text-sm text-[var(--text-secondary)] leading-relaxed line-clamp-3">
-      {description}
-    </p>
+<div class="group py-10 first:pt-6">
+  {/* 类型与精选标记：素面小字 */}
+  <div class="mb-3 flex items-center gap-3 text-xs font-mono-code text-[var(--text-muted)]">
+    <span>{typeLabel}</span>
+    {featured && (
+      <span class="font-serif-heading font-medium text-[var(--accent)]">★ 精选</span>
+    )}
   </div>
 
-  <div class="mt-5 pt-4 border-t border-[var(--border-color)]/70">
-    <!-- Tech stack pills -->
-    <div class="flex flex-wrap gap-1.5 mb-4">
-      {techStack.map((tech) => (
-        <span class="px-2 py-0.5 text-xs font-mono-code rounded bg-[var(--bg-surface-soft)] text-[var(--text-muted)] border border-[var(--border-color)]/50">
-          {tech}
-        </span>
-      ))}
-    </div>
+  {/* Title */}
+  <h3 class="font-serif-heading text-2xl font-bold text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors tracking-tight sm:text-3xl">
+    {slug ? <a href={`${base}projects/${slug}`}>{title}</a> : title}
+  </h3>
 
-    <!-- Links -->
-    <div class="flex flex-wrap items-center gap-4 text-xs font-medium">
-      {slug && (
-        <a
-          href={`${base}projects/${slug}`}
-          class="inline-flex items-center gap-1 text-[var(--accent)] hover:underline"
-        >
-          <span>查看完整介绍</span>
-          <ArrowUpRight class="w-3.5 h-3.5" />
-        </a>
-      )}
-      {download && (
-        <a
-          href={downloadUrl}
-          download
-          class="inline-flex items-center gap-1 text-[var(--accent)] hover:underline"
-        >
-          <Download class="w-3.5 h-3.5" />
-          <span>下载作品包 (.zip)</span>
-        </a>
-      )}
-      {demo && (
-        <a
-          href={demo}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center gap-1 text-[var(--accent)] hover:underline"
-        >
-          <span>在线体验</span>
-          <ArrowUpRight class="w-3.5 h-3.5" />
-        </a>
-      )}
-      {github && (
-        <a
-          href={github}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="inline-flex items-center gap-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
-        >
-          <Github class="w-3.5 h-3.5" />
-          <span>源码仓库</span>
-        </a>
-      )}
-    </div>
+  {/* Description */}
+  <p class="mt-3 max-w-2xl text-base text-[var(--text-secondary)] leading-relaxed">
+    {description}
+  </p>
+
+  {/* Tech stack: 素面小字，以 · 分隔 */}
+  <p class="mt-4 font-mono-code text-xs text-[var(--text-muted)]">
+    {techStack.join(' · ')}
+  </p>
+
+  {/* Links */}
+  <div class="mt-5 flex flex-wrap items-center gap-5 text-sm font-medium">
+    {slug && (
+      <a
+        href={`${base}projects/${slug}`}
+        class="inline-flex items-center gap-1 text-[var(--accent)] hover:underline"
+      >
+        <span>查看完整介绍</span>
+        <ArrowUpRight class="w-4 h-4" />
+      </a>
+    )}
+    {download && (
+      <a
+        href={downloadUrl}
+        download
+        class="inline-flex items-center gap-1 text-[var(--accent)] hover:underline"
+      >
+        <Download class="w-4 h-4" />
+        <span>下载作品包 (.zip)</span>
+      </a>
+    )}
+    {demo && (
+      <a
+        href={demo}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-1 text-[var(--accent)] hover:underline"
+      >
+        <span>在线体验</span>
+        <ArrowUpRight class="w-4 h-4" />
+      </a>
+    )}
+    {github && (
+      <a
+        href={github}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-1 text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+      >
+        <Github class="w-4 h-4" />
+        <span>源码仓库</span>
+      </a>
+    )}
   </div>
+
+  <span aria-hidden="true" class="brush-line mt-10"></span>
 </div>

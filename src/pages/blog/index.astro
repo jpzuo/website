@@ -1,9 +1,7 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import PostCover from '../../components/PostCover.astro';
-import { readingLabel } from '../../lib/reading-time';
+import InkLandscape from '../../components/InkLandscape.astro';
 import { getCollection } from 'astro:content';
-import { Calendar, ArrowRight, Layers, Tag as TagIcon, Clock } from '@lucide/astro';
 
 const base = import.meta.env.BASE_URL.endsWith('/') ? import.meta.env.BASE_URL : import.meta.env.BASE_URL + '/';
 
@@ -43,18 +41,17 @@ const formatDate = (date: Date) => {
 <Layout
   title="文章与思考手记 · ZUO"
   description="记录全栈架构、系统设计、数字美学与知识管理领域的工程实践与思考手记。"
-  maxWidth="max-w-6xl"
 >
-  <!-- Page header: ink-wash title + seal -->
-  <div class="mb-8 flex items-start justify-between gap-6">
+  <!-- Page header: 标题 + 印 + 竖排题字 -->
+  <div class="mb-10 flex items-start justify-between gap-6">
     <div>
-      <h1 class="font-serif-heading text-3xl sm:text-4xl font-bold tracking-tight text-[var(--text-primary)]">
+      <h1 class="font-serif-heading text-4xl font-bold tracking-tight text-[var(--text-primary)] sm:text-5xl">
         手记
       </h1>
-      <p class="mt-3 text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
+      <p class="mt-4 max-w-xl text-base text-[var(--text-secondary)] leading-relaxed">
         共 {posts.length} 篇技术手记，按分类、标签与关键词检索。
       </p>
-      <span aria-hidden="true" class="brush-line mt-5"></span>
+      <span aria-hidden="true" class="brush-line mt-6"></span>
     </div>
     <div aria-hidden="true" class="hidden select-none flex-col items-center gap-3 pt-1 sm:flex">
       <span class="seal h-10 w-10 text-lg">记</span>
@@ -62,184 +59,110 @@ const formatDate = (date: Date) => {
     </div>
   </div>
 
-  <!-- Two-Column Layout: Left Sticky Sidebar + Right Articles Stream -->
-  <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 items-start">
-      
-      <!-- Left Fixed / Sticky Sidebar -->
-      <aside class="md:col-span-4 lg:col-span-3 md:sticky md:top-24 md:max-h-[calc(100vh-7rem)] md:overflow-y-auto space-y-5 pr-1 scrollbar-none">
+  {/* 通幅山水 */}
+  <div class="bleed relative -mt-2 mb-12">
+    <InkLandscape class="h-48 sm:h-56" />
+  </div>
 
-        <!-- Search Card -->
-        <div class="p-4 sm:p-5 rounded-md ink-frame bg-[var(--bg-surface)] shadow-xs">
-          <label for="search-input" class="sr-only">搜索文章</label>
-          <div class="relative">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            <input
-              id="search-input"
-              type="search"
-              placeholder="搜索标题、标签…"
-              autocomplete="off"
-              class="w-full rounded-xl border border-[var(--border-color)] bg-[var(--bg-surface-soft)] pl-9 pr-8 py-2.5 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] outline-none focus:border-[var(--accent)] focus:ring-1 focus:ring-[var(--accent)]"
-            />
-            <button
-              id="search-clear"
-              type="button"
-              aria-label="清空搜索"
-              class="hidden absolute right-2 top-1/2 -translate-y-1/2 w-5 h-5 rounded-full text-[var(--text-muted)] hover:text-[var(--text-primary)] hover:bg-[var(--border-color)] items-center justify-center text-xs leading-none cursor-pointer"
-            >
-              ×
-            </button>
-          </div>
-          <p class="mt-2 px-1 text-[11px] text-[var(--text-muted)]">
-            按标题、分类与标签搜索，与左侧筛选可叠加。
-          </p>
-        </div>
+  <!-- Search: 一行素面检索 -->
+  <div class="relative mb-8">
+    <label for="search-input" class="sr-only">搜索文章</label>
+    <input
+      id="search-input"
+      type="search"
+      placeholder="搜索标题、分类、标签…"
+      autocomplete="off"
+      class="w-full border-b border-[var(--border-color)] bg-transparent py-2.5 pr-8 text-base text-[var(--text-primary)] placeholder:text-[var(--text-muted)] outline-none focus:border-[var(--accent)]"
+    />
+    <button
+      id="search-clear"
+      type="button"
+      aria-label="清空搜索"
+      class="hidden absolute right-1 top-1/2 -translate-y-1/2 w-6 h-6 text-[var(--text-muted)] hover:text-[var(--text-primary)] items-center justify-center text-base leading-none cursor-pointer"
+    >
+      ×
+    </button>
+  </div>
 
-        <!-- Category Navigation Card -->
-        <div class="p-4 sm:p-5 rounded-md ink-frame bg-[var(--bg-surface)] shadow-xs">
-          <div class="flex items-center justify-between mb-3 px-1">
-            <div class="flex items-center gap-1.5 text-xs font-serif-heading font-semibold text-[var(--text-primary)]">
-              <Layers class="w-3.5 h-3.5 text-[var(--accent)]" />
-              <span>分类导航</span>
-            </div>
-            <span class="text-[11px] text-[var(--text-muted)] font-mono-code" id="filter-count">
-              共 {posts.length} 篇
-            </span>
-          </div>
+  <!-- Category filter: 素面文字链接 -->
+  <nav class="mb-3 flex flex-wrap items-center gap-x-5 gap-y-2" id="category-filter-group">
+    <button
+      data-filter-type="all"
+      data-filter-val="all"
+      class="filter-pill cursor-pointer text-sm font-semibold text-[var(--accent)] underline underline-offset-4 transition-colors"
+    >
+      全部文章 <span class="font-mono-code text-xs opacity-70">({posts.length})</span>
+    </button>
+    {categories.map(([cat, count]) => (
+      <button
+        data-filter-type="category"
+        data-filter-val={cat}
+        class="filter-pill cursor-pointer text-sm text-[var(--text-secondary)] hover:text-[var(--text-primary)] transition-colors"
+      >
+        {cat} <span class="font-mono-code text-xs opacity-60">({count})</span>
+      </button>
+    ))}
+    <span class="ml-auto text-[11px] text-[var(--text-muted)] font-mono-code" id="filter-count">
+      共 {posts.length} 篇
+    </span>
+  </nav>
 
-          <nav class="space-y-1" id="category-filter-group">
-            <button
-              data-filter-type="all"
-              data-filter-val="all"
-              class="filter-pill active-pill w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium cursor-pointer transition-all duration-150 border border-[var(--accent)] bg-[var(--accent)] text-white shadow-xs text-left"
-            >
-              <span>全部文章</span>
-              <span class="opacity-80 text-[11px] font-mono-code">({posts.length})</span>
-            </button>
-            {categories.map(([cat, count]) => (
-              <button
-                data-filter-type="category"
-                data-filter-val={cat}
-                class="filter-pill w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium cursor-pointer transition-all duration-150 border border-transparent hover:border-[var(--border-color)] text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-soft)] text-left"
-              >
-                <span>{cat}</span>
-                <span class="opacity-60 text-[11px] font-mono-code">({count})</span>
-              </button>
-            ))}
-          </nav>
-        </div>
-
-        <!-- Tag Cloud Card -->
-        {allTags.length > 0 && (
-          <div class="p-4 sm:p-5 rounded-md ink-frame bg-[var(--bg-surface)] shadow-xs">
-            <div class="flex items-center gap-1.5 text-xs text-[var(--text-primary)] font-serif-heading font-semibold mb-3 px-1">
-              <TagIcon class="w-3.5 h-3.5 text-[var(--accent)]" />
-              <span>标签过滤</span>
-            </div>
-            <div class="flex flex-wrap gap-1.5" id="tag-filter-group">
-              {allTags.map(([tag, count]) => (
-                <button
-                  data-filter-type="tag"
-                  data-filter-val={tag}
-                  class="filter-tag px-2.5 py-1 rounded-lg text-xs font-mono-code whitespace-nowrap cursor-pointer transition-all duration-150 border border-[var(--border-color)]/70 bg-[var(--bg-surface-soft)] text-[var(--text-secondary)] hover:text-[var(--accent)] hover:border-[var(--accent)]"
-                >
-                  #{tag} <span class="text-[10px] opacity-60">({count})</span>
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        <!-- Archive Link -->
-        <a
-          href={`${base}blog/archive`}
-          class="group flex items-center justify-between p-4 sm:p-5 rounded-md ink-frame bg-[var(--bg-surface)] shadow-xs text-sm font-medium text-[var(--text-primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
+  <!-- Tag filter: 素面小字 -->
+  {allTags.length > 0 && (
+    <div class="mb-10 flex flex-wrap gap-x-4 gap-y-2" id="tag-filter-group">
+      {allTags.map(([tag, count]) => (
+        <button
+          data-filter-type="tag"
+          data-filter-val={tag}
+          class="filter-tag cursor-pointer font-mono-code text-xs text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors"
         >
-          <span>按年归档</span>
-          <span class="text-xs text-[var(--text-muted)] group-hover:text-[var(--accent)]">查看全部 →</span>
-        </a>
-      </aside>
-
-      <!-- Right Articles Stream -->
-      <div class="md:col-span-8 lg:col-span-9 min-w-0">
-        <div class="divide-y divide-[var(--border-color)]" id="posts-container">
-          {posts.map((post, i) => (
-            <article
-              class="reveal post-item py-7 first:pt-1 group transition-colors duration-150"
-              style={`transition-delay:${Math.min(i, 6) * 50}ms`}
-              data-category={post.data.category}
-              data-tags={JSON.stringify(post.data.tags)}
-              data-search={`${post.data.title} ${post.data.description} ${post.data.category} ${post.data.tags.join(' ')}`.toLowerCase()}
-            >
-              <div class="flex flex-col gap-5 sm:flex-row">
-              <a
-                href={`${base}blog/${post.id}`}
-                class="block aspect-[16/9] w-full shrink-0 sm:aspect-[4/3] sm:w-44"
-                aria-label={post.data.title}
-              >
-                <PostCover category={post.data.category} />
-              </a>
-              <div class="min-w-0 flex-1">
-              <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-2 mb-2">
-                <div class="flex items-center gap-2.5">
-                  <span class="text-xs font-serif-heading font-medium text-[var(--accent)] bg-[var(--accent-soft)] px-2 py-0.5 rounded">
-                    {post.data.category}
-                  </span>
-                  <span class="text-xs text-[var(--text-muted)] flex items-center gap-1 font-mono-code">
-                    <Calendar class="w-3 h-3" />
-                    {formatDate(post.data.pubDate)}
-                  </span>
-                  <span class="text-xs text-[var(--text-muted)] flex items-center gap-1 font-mono-code">
-                    <Clock class="w-3 h-3" />
-                    {readingLabel(post.body)}
-                  </span>
-                </div>
-                {post.data.featured && (
-                  <span class="text-[11px] font-serif-heading text-[var(--accent)] italic">
-                    ★ 精选
-                  </span>
-                )}
-              </div>
-
-              <h2 class="font-serif-heading text-xl sm:text-2xl font-bold tracking-tight text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors mt-2">
-                <a href={`${base}blog/${post.id}`} class="block">
-                  {post.data.title}
-                </a>
-              </h2>
-
-              <p class="mt-2.5 text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed line-clamp-2">
-                {post.data.description}
-              </p>
-
-              <div class="mt-4 flex items-center justify-between">
-                <div class="flex flex-wrap gap-1.5">
-                  {post.data.tags.map((tag) => (
-                    <span class="text-[11px] font-mono-code px-2 py-0.5 rounded bg-[var(--bg-surface-soft)] text-[var(--text-muted)] border border-[var(--border-color)]/50">
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-
-                <a
-                  href={`${base}blog/${post.id}`}
-                  class="inline-flex items-center gap-1 text-xs font-medium text-[var(--accent)] group-hover:translate-x-1 transition-transform"
-                >
-                  <span>阅读全文</span>
-                  <ArrowRight class="w-3.5 h-3.5" />
-                </a>
-              </div>
-              </div>
-              </div>
-            </article>
-          ))}
-
-          <!-- Empty state -->
-          <div id="empty-state" class="hidden py-16 text-center text-sm text-[var(--text-muted)]">
-            没有找到匹配的文章，换个关键词或筛选条件试试。
-          </div>
-        </div>
-      </div>
-
+          #{tag} <span class="opacity-60">({count})</span>
+        </button>
+      ))}
     </div>
+  )}
+
+  <!-- Articles: 素面标题列 -->
+  <ul class="divide-y divide-[var(--border-color)]/60" id="posts-container">
+    {posts.map((post, i) => (
+      <li
+        class="reveal post-item py-5 first:pt-1 group"
+        style={`transition-delay:${Math.min(i, 6) * 50}ms`}
+        data-category={post.data.category}
+        data-tags={JSON.stringify(post.data.tags)}
+        data-search={`${post.data.title} ${post.data.description} ${post.data.category} ${post.data.tags.join(' ')}`.toLowerCase()}
+      >
+        <a href={`${base}blog/${post.id}`} class="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:gap-5">
+          <time datetime={post.data.pubDate.toISOString()} class="shrink-0 font-mono-code text-xs text-[var(--text-muted)]">
+            {formatDate(post.data.pubDate)}
+          </time>
+          <span class="font-serif-heading text-lg font-bold text-[var(--text-primary)] transition-colors group-hover:text-[var(--accent)] sm:text-xl">
+            {post.data.title}
+          </span>
+          <span class="shrink-0 text-xs text-[var(--accent)] sm:ml-auto">
+            {post.data.category}
+          </span>
+        </a>
+      </li>
+    ))}
+
+    <!-- Empty state -->
+    <li id="empty-state" class="hidden py-16 text-center text-sm text-[var(--text-muted)]">
+      没有找到匹配的文章，换个关键词或筛选条件试试。
+    </li>
+  </ul>
+
+  <!-- Archive link -->
+  <div class="mt-10">
+    <span aria-hidden="true" class="brush-line mb-6"></span>
+    <a
+      href={`${base}blog/archive`}
+      class="group inline-flex items-center gap-1.5 text-sm font-medium text-[var(--accent)] hover:underline"
+    >
+      <span>按年归档</span>
+      <span class="transition-transform group-hover:translate-x-1">→</span>
+    </a>
+  </div>
 
   <!-- Interactive Filter + Search Script -->
   <script is:inline>
@@ -257,12 +180,12 @@ const formatDate = (date: Date) => {
 
     function resetButtons() {
       categoryBtns.forEach((btn) => {
-        btn.classList.remove('bg-[var(--accent)]', 'text-white', 'border-[var(--accent)]', 'shadow-xs');
-        btn.classList.add('border-transparent', 'text-[var(--text-secondary)]');
+        btn.classList.remove('text-[var(--accent)]', 'font-semibold', 'underline', 'underline-offset-4');
+        btn.classList.add('text-[var(--text-secondary)]');
       });
       tagBtns.forEach((btn) => {
-        btn.classList.remove('bg-[var(--accent)]', 'text-white', 'border-[var(--accent)]');
-        btn.classList.add('bg-[var(--bg-surface-soft)]', 'text-[var(--text-secondary)]', 'border-[var(--border-color)]/70');
+        btn.classList.remove('text-[var(--accent)]', 'font-semibold', 'underline', 'underline-offset-4');
+        btn.classList.add('text-[var(--text-muted)]');
       });
     }
 
@@ -324,8 +247,8 @@ const formatDate = (date: Date) => {
     categoryBtns.forEach((btn) => {
       btn.addEventListener('click', () => {
         resetButtons();
-        btn.classList.add('bg-[var(--accent)]', 'text-white', 'border-[var(--accent)]', 'shadow-xs');
-        btn.classList.remove('border-transparent', 'text-[var(--text-secondary)]');
+        btn.classList.add('text-[var(--accent)]', 'font-semibold', 'underline', 'underline-offset-4');
+        btn.classList.remove('text-[var(--text-secondary)]');
 
         currentFilterType = btn.getAttribute('data-filter-type') || 'all';
         currentFilterVal = btn.getAttribute('data-filter-val') || 'all';
@@ -336,8 +259,8 @@ const formatDate = (date: Date) => {
     tagBtns.forEach((btn) => {
       btn.addEventListener('click', () => {
         resetButtons();
-        btn.classList.add('bg-[var(--accent)]', 'text-white', 'border-[var(--accent)]');
-        btn.classList.remove('bg-[var(--bg-surface-soft)]', 'text-[var(--text-secondary)]', 'border-[var(--border-color)]/70');
+        btn.classList.add('text-[var(--accent)]', 'font-semibold', 'underline', 'underline-offset-4');
+        btn.classList.remove('text-[var(--text-muted)]');
 
         currentFilterType = 'tag';
         currentFilterVal = btn.getAttribute('data-filter-val') || '';

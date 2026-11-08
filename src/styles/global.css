@@ -38,6 +38,7 @@
     font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", Roboto, sans-serif;
     scroll-behavior: smooth;
     transition: background-color 0.25s ease, color 0.25s ease;
+    overflow-x: clip;
   }
 
   body {
@@ -147,6 +148,12 @@ pre.astro-code {
 .vertical-text {
   writing-mode: vertical-rl;
   letter-spacing: 0.35em;
+}
+
+/* 通幅出血：让山水画卷撑满视口宽度（配合 html overflow-x: clip） */
+.bleed {
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
 }
 
 /* 文章排版水墨化：标题下加笔触、引用加墨边、首字下沉 */
