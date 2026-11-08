@@ -45,6 +45,23 @@ const formatDate = (date: Date) => {
   description="记录全栈架构、系统设计、数字美学与知识管理领域的工程实践与思考手记。"
   maxWidth="max-w-6xl"
 >
+  <!-- Page header: ink-wash title + seal -->
+  <div class="mb-8 flex items-start justify-between gap-6">
+    <div>
+      <h1 class="font-serif-heading text-3xl sm:text-4xl font-bold tracking-tight text-[var(--text-primary)]">
+        手记
+      </h1>
+      <p class="mt-3 text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
+        共 {posts.length} 篇技术手记，按分类、标签与关键词检索。
+      </p>
+      <span aria-hidden="true" class="brush-line mt-5"></span>
+    </div>
+    <div aria-hidden="true" class="hidden select-none flex-col items-center gap-3 pt-1 sm:flex">
+      <span class="seal h-10 w-10 text-lg">记</span>
+      <span class="vertical-text font-serif-heading text-sm text-[var(--text-muted)]">落笔有痕</span>
+    </div>
+  </div>
+
   <!-- Two-Column Layout: Left Sticky Sidebar + Right Articles Stream -->
   <div class="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 items-start">
       
@@ -52,7 +69,7 @@ const formatDate = (date: Date) => {
       <aside class="md:col-span-4 lg:col-span-3 md:sticky md:top-24 md:max-h-[calc(100vh-7rem)] md:overflow-y-auto space-y-5 pr-1 scrollbar-none">
 
         <!-- Search Card -->
-        <div class="p-4 sm:p-5 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-surface)] shadow-xs">
+        <div class="p-4 sm:p-5 rounded-md ink-frame bg-[var(--bg-surface)] shadow-xs">
           <label for="search-input" class="sr-only">搜索文章</label>
           <div class="relative">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] pointer-events-none"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
@@ -78,7 +95,7 @@ const formatDate = (date: Date) => {
         </div>
 
         <!-- Category Navigation Card -->
-        <div class="p-4 sm:p-5 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-surface)] shadow-xs">
+        <div class="p-4 sm:p-5 rounded-md ink-frame bg-[var(--bg-surface)] shadow-xs">
           <div class="flex items-center justify-between mb-3 px-1">
             <div class="flex items-center gap-1.5 text-xs font-serif-heading font-semibold text-[var(--text-primary)]">
               <Layers class="w-3.5 h-3.5 text-[var(--accent)]" />
@@ -113,7 +130,7 @@ const formatDate = (date: Date) => {
 
         <!-- Tag Cloud Card -->
         {allTags.length > 0 && (
-          <div class="p-4 sm:p-5 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-surface)] shadow-xs">
+          <div class="p-4 sm:p-5 rounded-md ink-frame bg-[var(--bg-surface)] shadow-xs">
             <div class="flex items-center gap-1.5 text-xs text-[var(--text-primary)] font-serif-heading font-semibold mb-3 px-1">
               <TagIcon class="w-3.5 h-3.5 text-[var(--accent)]" />
               <span>标签过滤</span>
@@ -135,7 +152,7 @@ const formatDate = (date: Date) => {
         <!-- Archive Link -->
         <a
           href={`${base}blog/archive`}
-          class="group flex items-center justify-between p-4 sm:p-5 rounded-2xl border border-[var(--border-color)] bg-[var(--bg-surface)] shadow-xs text-sm font-medium text-[var(--text-primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
+          class="group flex items-center justify-between p-4 sm:p-5 rounded-md ink-frame bg-[var(--bg-surface)] shadow-xs text-sm font-medium text-[var(--text-primary)] hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
         >
           <span>按年归档</span>
           <span class="text-xs text-[var(--text-muted)] group-hover:text-[var(--accent)]">查看全部 →</span>

@@ -42,15 +42,20 @@ const formatDate = (date: Date) => {
     <p class="mt-3 text-sm sm:text-base text-[var(--text-secondary)] leading-relaxed">
       共 {posts.length} 篇手记，从 {years[years.length - 1]?.[0]} 年写到现在。
     </p>
+    <div class="mt-6 flex items-center gap-4">
+      <span aria-hidden="true" class="brush-line"></span>
+      <span aria-hidden="true" class="seal h-8 w-8 text-sm">档</span>
+    </div>
   </div>
 
   <div class="space-y-12">
     {years.map(([year, yearPosts]) => (
       <section>
-        <div class="flex items-baseline gap-3 pb-4 border-b border-[var(--border-color)]">
+        <div class="flex items-baseline gap-3">
           <h2 class="font-serif-heading text-2xl font-bold text-[var(--text-primary)]">{year}</h2>
           <span class="text-xs text-[var(--text-muted)] font-mono-code">{yearPosts.length} 篇</span>
         </div>
+        <span aria-hidden="true" class="brush-line mt-3 mb-4"></span>
         <ul class="divide-y divide-[var(--border-color)]">
           {yearPosts.map((post) => (
             <li class="group py-4 first:pt-5">

@@ -15,7 +15,7 @@ const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
 >
   <div class="space-y-10">
     <!-- Header banner -->
-    <header class="pb-8 border-b border-[var(--border-color)]">
+    <header class="pb-8">
       <div class="inline-flex items-center gap-2 text-xs font-serif-heading font-medium text-[var(--accent)] bg-[var(--accent-soft)] px-2.5 py-1 rounded-full mb-3">
         <Layers class="w-3.5 h-3.5" />
         <span>工程与作品 · Portfolio</span>
@@ -26,36 +26,40 @@ const projects = allProjects.sort((a, b) => a.data.order - b.data.order);
       <p class="mt-3 text-base text-[var(--text-secondary)] max-w-2xl leading-relaxed">
         将理论付诸代码，从承载业务的高可用企业级系统，到提升开发体验的开源小工具，以及纯粹出于好奇心探索的实验性交互项目。
       </p>
+      <div class="mt-6 flex items-center gap-4">
+        <span aria-hidden="true" class="brush-line"></span>
+        <span aria-hidden="true" class="seal h-8 w-8 text-sm">集</span>
+      </div>
     </header>
 
     <!-- Project Type Filter Buttons -->
     <div class="flex flex-wrap items-center gap-2 pb-2 text-xs font-mono-code" id="project-filter-bar">
       <button
         data-filter="all"
-        class="project-filter-btn px-3.5 py-1.5 rounded-full border border-[var(--accent)] bg-[var(--accent)] text-white font-medium cursor-pointer transition-colors duration-150 inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 shadow-xs"
+        class="project-filter-btn px-3.5 py-1.5 rounded-md border border-[var(--accent)] bg-[var(--accent)] text-white font-medium cursor-pointer transition-colors duration-150 inline-flex items-center gap-1.5 whitespace-nowrap shrink-0 shadow-xs"
       >
         <span>全部作品</span>
         <span class="opacity-75">({projects.length})</span>
       </button>
       <button
         data-filter="commercial"
-        class="project-filter-btn px-3.5 py-1.5 rounded-full border border-[var(--border-color)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--text-primary)] font-medium cursor-pointer transition-colors duration-150 inline-flex items-center gap-1.5 whitespace-nowrap shrink-0"
+        class="project-filter-btn px-3.5 py-1.5 rounded-md border border-[var(--border-color)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--text-primary)] font-medium cursor-pointer transition-colors duration-150 inline-flex items-center gap-1.5 whitespace-nowrap shrink-0"
       >
-        <Building class="w-3.5 h-3.5 text-emerald-500" />
+        <Building class="w-3.5 h-3.5 text-[var(--text-muted)]" />
         <span>上线 / 商业产品</span>
       </button>
       <button
         data-filter="opensource"
-        class="project-filter-btn px-3.5 py-1.5 rounded-full border border-[var(--border-color)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--text-primary)] font-medium cursor-pointer transition-colors duration-150 inline-flex items-center gap-1.5 whitespace-nowrap shrink-0"
+        class="project-filter-btn px-3.5 py-1.5 rounded-md border border-[var(--border-color)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--text-primary)] font-medium cursor-pointer transition-colors duration-150 inline-flex items-center gap-1.5 whitespace-nowrap shrink-0"
       >
-        <CodeXml class="w-3.5 h-3.5 text-blue-500" />
+        <CodeXml class="w-3.5 h-3.5 text-[var(--text-muted)]" />
         <span>开源工具</span>
       </button>
       <button
         data-filter="experiment"
-        class="project-filter-btn px-3.5 py-1.5 rounded-full border border-[var(--border-color)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--text-primary)] font-medium cursor-pointer transition-colors duration-150 inline-flex items-center gap-1.5 whitespace-nowrap shrink-0"
+        class="project-filter-btn px-3.5 py-1.5 rounded-md border border-[var(--border-color)] bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:border-[var(--accent)] hover:text-[var(--text-primary)] font-medium cursor-pointer transition-colors duration-150 inline-flex items-center gap-1.5 whitespace-nowrap shrink-0"
       >
-        <Sparkles class="w-3.5 h-3.5 text-amber-500" />
+        <Sparkles class="w-3.5 h-3.5 text-[var(--accent)]" />
         <span>实验探索</span>
       </button>
     </div>

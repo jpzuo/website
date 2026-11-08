@@ -1,5 +1,6 @@
 ---
-// 文章封面：水墨风——按分类配不同深浅的墨色晕染 + 分类大字 + 朱红印。
+import InkMountains from './InkMountains.astro';
+// 文章封面：水墨画——按分类配不同深浅的墨色晕染 + 远山剪影 + 朱红日 + 分类大字。
 // 纯 CSS/SVG 渲染，无图片文件，34 篇文章自动全覆盖。
 interface Props {
   category: string;
@@ -24,19 +25,20 @@ const gradient = `linear-gradient(135deg, ${palette.from} 0%, ${palette.to} 100%
 
 {variant === 'banner' ? (
   <div
-    class="relative overflow-hidden rounded-xl border border-[var(--border-color)]"
-    style="background: linear-gradient(135deg, #EFE9DB 0%, #FDFBF5 100%);"
+    class="relative overflow-hidden rounded-xl text-white"
+    style={`background: ${gradient};`}
   >
-    {/* 淡墨晕染 + 大字 */}
+    {/* 水墨画：远山 + 朱红日 + 大字 */}
+    <InkMountains variant="hero" tone="paper" class="absolute inset-x-0 bottom-0 h-28" />
     <span
       aria-hidden="true"
-      class="font-serif-heading pointer-events-none absolute -right-3 -bottom-10 select-none text-[11rem] font-bold leading-none text-[var(--text-primary)] opacity-10"
+      class="font-serif-heading pointer-events-none absolute -right-3 -bottom-12 select-none text-[11rem] font-bold leading-none opacity-20"
     >
       {palette.glyph}
     </span>
     <span
       aria-hidden="true"
-      class="font-serif-heading pointer-events-none absolute right-4 top-3 select-none text-xs font-bold tracking-[0.3em] text-[var(--text-muted)] opacity-60"
+      class="font-serif-heading pointer-events-none absolute right-4 top-3 select-none text-xs font-bold tracking-[0.3em] opacity-50"
     >
       ZUO
     </span>
@@ -58,6 +60,8 @@ const gradient = `linear-gradient(135deg, ${palette.from} 0%, ${palette.to} 100%
     class="relative flex h-full w-full shrink-0 items-center justify-center overflow-hidden rounded-xl text-white"
     style={`background: ${gradient};`}
   >
+    {/* 底部小远山 + 朱红日 */}
+    <InkMountains variant="strip" tone="paper" class="absolute inset-x-0 bottom-0 h-10" />
     <span
       aria-hidden="true"
       class="font-serif-heading pointer-events-none absolute -right-1 -bottom-4 select-none text-7xl font-bold leading-none opacity-20"

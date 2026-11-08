@@ -1,0 +1,40 @@
+---
+// 共用水墨山峦：两层淡墨远山 + 一轮朱红日。
+// variant="hero" 用于首屏（高、山更浓）；variant="strip" 用于每页底部（矮、更淡）。
+// tone="paper" 用于深色墨底上的封面（山用纸色），默认 tone="ink" 用于浅色纸面。
+interface Props {
+  variant?: 'hero' | 'strip';
+  sun?: boolean;
+  tone?: 'ink' | 'paper';
+  class?: string;
+}
+
+const { variant = 'strip', sun = true, tone = 'ink', class: className = '' } = Astro.props;
+const tall = variant === 'hero';
+// 纸色山（深墨底上）需要更高不透明度才看得见
+const farOpacity = tone === 'paper' ? (tall ? 0.16 : 0.12) : (tall ? 0.09 : 0.06);
+const nearOpacity = tone === 'paper' ? (tall ? 0.28 : 0.2) : (tall ? 0.15 : 0.1);
+const sunCx = tall ? 668 : 700;
+const sunCy = tall ? 34 : 26;
+const sunR = tall ? 13 : 10;
+const fill = tone === 'paper' ? 'var(--bg-page)' : 'var(--text-primary)';
+---
+
+<svg
+  aria-hidden="true"
+  class={`pointer-events-none w-full ${className}`}
+  preserveAspectRatio="none"
+  viewBox="0 0 800 120"
+>
+  <path
+    d="M0 90 L90 45 L170 85 L260 30 L350 80 L430 50 L520 88 L620 40 L700 82 L800 55 L800 120 L0 120 Z"
+    fill={fill}
+    opacity={farOpacity}
+  />
+  <path
+    d="M0 105 L120 70 L230 100 L340 62 L470 102 L580 72 L690 100 L800 78 L800 120 L0 120 Z"
+    fill={fill}
+    opacity={nearOpacity}
+  />
+  {sun && <circle cx={sunCx} cy={sunCy} r={sunR} fill="var(--accent)" opacity="0.85" />}
+</svg>
