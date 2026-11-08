@@ -48,9 +48,14 @@ const formatDate = (date: Date) => {
         <h1 class="reveal mt-5 font-serif-heading text-5xl font-bold leading-[1.15] tracking-tight text-[var(--text-primary)] sm:text-6xl" style="transition-delay:60ms">
           写代码是工作，<br />写手记是爱好。
         </h1>
-        <p class="reveal mt-6 max-w-xl text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg" style="transition-delay:120ms">
-          现在代码大都是 AI 在写，我只是一名普通的软件开发工程师。这里是我自己写的东西：手记、作品与实验。
-        </p>
+        <blockquote class="reveal mt-6 max-w-xl" style="transition-delay:120ms">
+          <p class="font-serif-heading text-base leading-relaxed text-[var(--text-secondary)] sm:text-lg">
+            “纸上得来终觉浅，绝知此事要躬行。”
+          </p>
+          <cite class="mt-2 block font-mono-code text-xs tracking-wider text-[var(--text-muted)] not-italic">
+            —— 陆游《冬夜读书示子聿》
+          </cite>
+        </blockquote>
         <div class="reveal mt-8 flex flex-wrap items-center gap-6" style="transition-delay:180ms">
           <a
             href={`${base}projects`}
