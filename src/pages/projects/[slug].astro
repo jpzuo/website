@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import InkLandscape from '../../components/InkLandscape.astro';
 import { ArrowLeft, Download } from '@lucide/astro';
 
 export async function getStaticPaths() {
@@ -48,12 +49,17 @@ const { Content } = await render(project);
       </div>
     </header>
 
+    {/* 通幅山水 */}
+    <div class="bleed relative -mt-2">
+      <InkLandscape class="h-40 sm:h-48" />
+    </div>
+
     {project.data.download && (
-      <div class="p-5 rounded-md ink-frame bg-[var(--bg-surface)] flex flex-col sm:flex-row sm:items-center gap-4">
+      <div class="mt-10 flex flex-col sm:flex-row sm:items-center gap-4">
         <a
           href={downloadUrl}
           download
-          class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-[var(--accent)] text-white text-sm font-medium hover:opacity-90 transition-opacity shrink-0"
+          class="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-md bg-[var(--text-primary)] text-[var(--bg-page)] text-sm font-medium hover:opacity-90 transition-opacity shrink-0"
         >
           <Download class="w-4 h-4" />
           <span>下载完整作品包 (.zip)</span>

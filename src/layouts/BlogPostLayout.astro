@@ -46,9 +46,9 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
       <span>返回文章目录</span>
     </a>
 
-    <div class="grid grid-cols-1 lg:grid-cols-4 gap-12">
+    <div>
       <!-- Article Main Column -->
-      <article class="lg:col-span-3">
+      <article>
         <!-- Article Cover -->
         <div class="mb-8">
           <PostCover category={category} variant="banner" />
@@ -99,27 +99,27 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
           <span aria-hidden="true" class="brush-line mt-8"></span>
         </header>
 
-        <!-- Mobile TOC (collapsible, below lg) -->
+        {/* 目录：文内素面列表 */}
         {tocHeadings.length > 0 && (
-          <details class="lg:hidden mb-8 rounded-md ink-frame bg-[var(--bg-surface)]">
-            <summary class="px-4 py-3 text-sm font-serif-heading font-bold text-[var(--text-primary)] cursor-pointer list-none flex items-center justify-between">
-              <span>文章目录（{tocHeadings.length} 节）</span>
-              <span class="text-[var(--text-muted)] text-xs">展开 ▾</span>
-            </summary>
-            <nav class="px-4 pb-4 space-y-1.5 text-sm border-t border-[var(--border-color)] pt-3">
+          <nav class="mt-10">
+            <p class="font-serif-heading text-sm font-bold text-[var(--text-primary)]">目录</p>
+            <span aria-hidden="true" class="brush-line mt-3 mb-4"></span>
+            <ul class="space-y-2 text-sm">
               {tocHeadings.map((h) => (
-                <a
-                  href={`#${h.slug}`}
-                  class={`toc-link block text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors py-1 ${
-                    h.depth === 3 ? 'pl-3 text-xs' : 'font-medium'
-                  }`}
-                  data-slug={h.slug}
-                >
-                  {h.text}
-                </a>
+                <li>
+                  <a
+                    href={`#${h.slug}`}
+                    class={`toc-link text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors ${
+                      h.depth === 3 ? 'pl-4 text-xs' : 'font-medium'
+                    }`}
+                    data-slug={h.slug}
+                  >
+                    {h.text}
+                  </a>
+                </li>
               ))}
-            </nav>
-          </details>
+            </ul>
+          </nav>
         )}
 
         <!-- Article Body -->
@@ -129,38 +129,35 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
 
         <!-- Prev / Next Navigation -->
         {(prevPost || nextPost) && (
-          <nav class="mt-14 grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {prevPost ? (
-              <a
-                href={prevPost.href}
-                class="group rounded-md ink-frame bg-[var(--bg-surface)] p-4 hover:border-[var(--accent)] transition-colors"
-              >
-                <span class="block text-[11px] font-mono-code text-[var(--text-muted)] mb-1">← 上一篇 · 更新的文章</span>
-                <span class="font-serif-heading font-bold text-sm text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors line-clamp-2">
-                  {prevPost.title}
-                </span>
-              </a>
-            ) : (
-              <span />
-            )}
-            {nextPost ? (
-              <a
-                href={nextPost.href}
-                class="group rounded-md ink-frame bg-[var(--bg-surface)] p-4 text-right hover:border-[var(--accent)] transition-colors"
-              >
-                <span class="block text-[11px] font-mono-code text-[var(--text-muted)] mb-1">下一篇 · 更早的文章 →</span>
-                <span class="font-serif-heading font-bold text-sm text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors line-clamp-2">
-                  {nextPost.title}
-                </span>
-              </a>
-            ) : (
-              <span />
-            )}
+          <nav class="mt-16">
+            <span aria-hidden="true" class="brush-line mb-8"></span>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {prevPost ? (
+                <a href={prevPost.href} class="group">
+                  <span class="block text-[11px] font-mono-code text-[var(--text-muted)] mb-1">← 上一篇 · 更新的文章</span>
+                  <span class="font-serif-heading font-bold text-base text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors line-clamp-2">
+                    {prevPost.title}
+                  </span>
+                </a>
+              ) : (
+                <span />
+              )}
+              {nextPost ? (
+                <a href={nextPost.href} class="group sm:text-right">
+                  <span class="block text-[11px] font-mono-code text-[var(--text-muted)] mb-1">下一篇 · 更早的文章 →</span>
+                  <span class="font-serif-heading font-bold text-base text-[var(--text-primary)] group-hover:text-[var(--accent)] transition-colors line-clamp-2">
+                    {nextPost.title}
+                  </span>
+                </a>
+              ) : (
+                <span />
+              )}
+            </div>
           </nav>
         )}
 
         <!-- Article Footer & Copyright -->
-        <footer class="mt-14 pt-8 border-t border-[var(--border-color)] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-[var(--text-muted)]">
+        <footer class="mt-16 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 text-xs text-[var(--text-muted)]">
           <div>
             <p>本文遵循知识共享许可协议（CC BY-NC-SA 4.0）</p>
             <p class="mt-0.5">转载请注明原作者与出处链接。</p>
@@ -173,31 +170,6 @@ const tocHeadings = headings.filter((h) => h.depth === 2 || h.depth === 3);
           </a>
         </footer>
       </article>
-
-      <!-- Sidebar / Table of Contents (TOC) -->
-      {tocHeadings.length > 0 && (
-        <aside class="hidden lg:block lg:col-span-1">
-          <div class="sticky top-24 p-4 rounded-md ink-frame bg-[var(--bg-surface)]">
-            <h2 class="font-serif-heading text-xs font-bold uppercase tracking-wider text-[var(--text-muted)] mb-3">
-              文章目录
-            </h2>
-            <span aria-hidden="true" class="brush-line mb-3"></span>
-            <nav class="space-y-1.5 text-xs">
-              {tocHeadings.map((h) => (
-                <a
-                  href={`#${h.slug}`}
-                  class={`toc-link block text-[var(--text-secondary)] hover:text-[var(--accent)] transition-colors py-1 ${
-                    h.depth === 3 ? 'pl-3 text-[11px]' : 'font-medium'
-                  }`}
-                  data-slug={h.slug}
-                >
-                  {h.text}
-                </a>
-              ))}
-            </nav>
-          </div>
-        </aside>
-      )}
     </div>
   </div>
 

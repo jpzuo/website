@@ -1,5 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import InkLandscape from '../components/InkLandscape.astro';
 import { User, Briefcase, GraduationCap, Wrench, Mail, MapPin, Compass } from '@lucide/astro';
 import Github from '../components/icons/Github.astro';
 
@@ -107,6 +108,11 @@ const usesList = [
       </div>
     </section>
 
+    {/* 通幅山水 */}
+    <div class="bleed relative -mt-4">
+      <InkLandscape class="h-48 sm:h-56" />
+    </div>
+
     <!-- Experience Timeline -->
     <section>
       <div class="flex items-center gap-2 mb-3">
@@ -147,7 +153,7 @@ const usesList = [
       </div>
       <span aria-hidden="true" class="brush-line mb-6"></span>
 
-      <div class="p-5 rounded-md ink-frame bg-[var(--bg-surface)] flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
+      <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-1">
         <div>
           <h3 class="font-serif-heading font-bold text-base text-[var(--text-primary)]">
             计算机科学与技术 · 工学学士
@@ -170,33 +176,29 @@ const usesList = [
       </div>
       <span aria-hidden="true" class="brush-line mb-6"></span>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div class="space-y-8">
         {skillCategories.map((cat) => (
-          <div class="p-5 rounded-md ink-frame bg-[var(--bg-surface)]">
-            <h3 class="font-serif-heading font-bold text-sm text-[var(--text-primary)] mb-3">
+          <div>
+            <h3 class="font-serif-heading font-bold text-base text-[var(--text-primary)] mb-2">
               {cat.name}
             </h3>
-            <div class="flex flex-wrap gap-1.5">
-              {cat.skills.map((skill) => (
-                <span class="px-2.5 py-1 text-xs font-mono-code rounded bg-[var(--bg-surface-soft)] text-[var(--text-secondary)] border border-[var(--border-color)]/60">
-                  {skill}
-                </span>
-              ))}
-            </div>
+            <p class="font-mono-code text-sm text-[var(--text-secondary)] leading-relaxed">
+              {cat.skills.join(' · ')}
+            </p>
           </div>
         ))}
       </div>
     </section>
 
     <!-- Uses / Setup -->
-    <section class="p-6 rounded-md ink-frame bg-[var(--bg-surface-soft)]">
+    <section>
       <div class="flex items-center gap-2 mb-3">
         <Wrench class="w-4 h-4 text-[var(--accent)]" />
         <h2 class="font-serif-heading text-lg font-bold text-[var(--text-primary)]">
           我的装备与生产力工具 (Uses)
         </h2>
       </div>
-      <span aria-hidden="true" class="brush-line mb-4"></span>
+      <span aria-hidden="true" class="brush-line mb-6"></span>
 
       <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
         {usesList.map((use) => (
