@@ -41,10 +41,10 @@ const isActive = (href: string) => {
       {navItems.map((item) => (
         <a
           href={item.href}
-          class={`px-3.5 py-1.5 rounded-md text-sm font-medium transition-colors duration-150 ${
+          class={`px-3.5 py-1.5 text-sm font-medium transition-colors duration-150 ${
             isActive(item.href)
-              ? 'text-[var(--accent)] bg-[var(--accent-soft)] font-semibold'
-              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-soft)]'
+              ? 'text-[var(--text-primary)] font-semibold underline decoration-2 underline-offset-8'
+              : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
           }`}
         >
           {item.label}
@@ -83,10 +83,10 @@ const isActive = (href: string) => {
     {navItems.map((item) => (
       <a
         href={item.href}
-        class={`block px-3 py-2 rounded-md text-base font-medium ${
+        class={`block px-3 py-2 text-base font-medium ${
           isActive(item.href)
-            ? 'text-[var(--accent)] bg-[var(--accent-soft)] font-semibold'
-            : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)] hover:bg-[var(--bg-surface-soft)]'
+            ? 'text-[var(--text-primary)] font-semibold underline decoration-2 underline-offset-4'
+            : 'text-[var(--text-secondary)] hover:text-[var(--text-primary)]'
         }`}
       >
         {item.label}

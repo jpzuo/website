@@ -1,8 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
-import HeroParticles from '../components/HeroParticles.astro';
-import InkLandscape from '../components/InkLandscape.astro';
+import InkHero from '../components/InkHero.astro';
 import { getCollection } from 'astro:content';
 import { ArrowRight, ArrowUpRight } from '@lucide/astro';
 
@@ -33,12 +32,16 @@ const formatDate = (date: Date) => {
 
 <Layout>
   <div>
-    <!-- Hero: 画卷式首屏 -->
-    {/* 注意：这里不能加 overflow-hidden，否则通幅山水的 bleed 会被裁回窄栏 */}
-    <section class="relative pt-6 sm:pt-10">
-      <HeroParticles />
-      <span id="hero-watermark" aria-hidden="true" class="hero-watermark pointer-events-none select-none absolute -right-2 -top-8 hidden font-serif-heading text-[11rem] font-bold leading-none sm:block">ZUO</span>
-      <div class="relative">
+    <!-- Hero: 山水做满首屏背景，文案压在雾上 -->
+    <section class="bleed relative flex min-h-[calc(100svh-4rem)] flex-col justify-center">
+      {/* 满幅山水背景 */}
+      <div class="absolute inset-0" aria-hidden="true">
+        <InkHero class="h-full w-full" />
+      </div>
+      {/* 顶部淡纱，保证文案可读 */}
+      <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 top-0 h-2/3 bg-gradient-to-b from-[var(--bg-page)]/80 via-[var(--bg-page)]/25 to-transparent"></div>
+
+      <div class="relative z-10 mx-auto w-full max-w-3xl px-6 py-20 sm:py-24">
         <p class="reveal font-mono-code text-xs tracking-[0.2em] uppercase text-[var(--accent)]">
           你好，我是 ZUO · 全栈工程师
         </p>
@@ -64,38 +67,35 @@ const formatDate = (date: Date) => {
             <ArrowRight class="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </a>
         </div>
+
+        {/* 数字：一行素面统计 */}
+        <dl class="reveal mt-12 flex flex-wrap gap-x-12 gap-y-4" style="transition-delay:240ms">
+          <div>
+            <dt class="sr-only">文章数</dt>
+            <dd class="font-serif-heading text-3xl font-bold text-[var(--text-primary)]">
+              <span data-count={allPosts.length}>0</span><span class="ml-1 text-sm font-medium text-[var(--text-muted)]">篇手记</span>
+            </dd>
+          </div>
+          <div>
+            <dt class="sr-only">作品数</dt>
+            <dd class="font-serif-heading text-3xl font-bold text-[var(--text-primary)]">
+              <span data-count={allProjects.length}>0</span><span class="ml-1 text-sm font-medium text-[var(--text-muted)]">个作品</span>
+            </dd>
+          </div>
+          <div>
+            <dt class="sr-only">持续写作</dt>
+            <dd class="font-serif-heading text-3xl font-bold text-[var(--text-primary)]">
+              <span data-count={yearsWriting}>0</span><span class="ml-1 text-sm font-medium text-[var(--text-muted)]">年持续写作</span>
+            </dd>
+          </div>
+        </dl>
       </div>
 
-      {/* 通幅山水画卷 */}
-      <div class="bleed relative mt-12">
-        <InkLandscape class="h-64 sm:h-80" />
-        <div aria-hidden="true" class="pointer-events-none absolute right-4 top-6 hidden select-none flex-col items-center gap-4 sm:flex">
-          <span class="seal h-10 w-10 text-lg">左</span>
-          <span class="vertical-text font-serif-heading text-sm text-[var(--text-muted)]">代码为墨</span>
-        </div>
+      {/* 印章 + 竖排题字，落在首屏右下角、湖面之上 */}
+      <div aria-hidden="true" class="pointer-events-none absolute bottom-8 right-6 z-10 hidden select-none flex-col items-center gap-4 sm:flex">
+        <span class="seal h-10 w-10 text-lg">左</span>
+        <span class="vertical-text font-serif-heading text-sm text-[var(--text-muted)]">代码为墨</span>
       </div>
-
-      {/* 数字：一行素面统计 */}
-      <dl class="reveal mt-12 flex flex-wrap gap-x-12 gap-y-4" style="transition-delay:240ms">
-        <div>
-          <dt class="sr-only">文章数</dt>
-          <dd class="font-serif-heading text-3xl font-bold text-[var(--text-primary)]">
-            <span data-count={allPosts.length}>0</span><span class="ml-1 text-sm font-medium text-[var(--text-muted)]">篇手记</span>
-          </dd>
-        </div>
-        <div>
-          <dt class="sr-only">作品数</dt>
-          <dd class="font-serif-heading text-3xl font-bold text-[var(--text-primary)]">
-            <span data-count={allProjects.length}>0</span><span class="ml-1 text-sm font-medium text-[var(--text-muted)]">个作品</span>
-          </dd>
-        </div>
-        <div>
-          <dt class="sr-only">持续写作</dt>
-          <dd class="font-serif-heading text-3xl font-bold text-[var(--text-primary)]">
-            <span data-count={yearsWriting}>0</span><span class="ml-1 text-sm font-medium text-[var(--text-muted)]">年持续写作</span>
-          </dd>
-        </div>
-      </dl>
     </section>
 
     <!-- Featured Works: 单栏大条目 -->
@@ -164,4 +164,49 @@ const formatDate = (date: Date) => {
       </a>
     </section>
   </div>
+
+  {/* 数字滚动：原先在 HeroParticles 里，星图去掉后单独保留在这里 */}
+  <script is:inline>
+    (function () {
+      var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      function animate(el) {
+        var target = parseInt(el.getAttribute('data-count') || '0', 10);
+        if (reduceMotion) {
+          el.textContent = String(target);
+          return;
+        }
+        var start = null, dur = 1100;
+        function step(ts) {
+          if (!start) start = ts;
+          var t = Math.min((ts - start) / dur, 1);
+          var eased = 1 - Math.pow(1 - t, 3);
+          el.textContent = String(Math.round(target * eased));
+          if (t < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+      function boot() {
+        var els = Array.prototype.slice.call(document.querySelectorAll('[data-count]'));
+        if (!els.length) return;
+        if ('IntersectionObserver' in window) {
+          var io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                animate(entry.target);
+                io.unobserve(entry.target);
+              }
+            });
+          }, { threshold: 0.4 });
+          els.forEach(function (el) { io.observe(el); });
+        } else {
+          els.forEach(animate);
+        }
+      }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot, { once: true });
+      } else {
+        boot();
+      }
+    })();
+  </script>
 </Layout>
