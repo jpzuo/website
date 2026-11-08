@@ -1,0 +1,246 @@
+---
+// 首屏粒子画布：缓慢漂移的粒子 + 就近连线，鼠标靠近时牵引连线。
+// 零依赖，纯 Canvas；移动端减量、减动效下只画一帧静态图、离开视口时停跑。
+// 切换页面回来会重新初始化，旧的监听与动画帧在重进时先清理掉。
+---
+
+<canvas
+  id="hero-particles"
+  aria-hidden="true"
+  class="pointer-events-none absolute inset-0 h-full w-full"
+></canvas>
+
+<script is:inline>
+  (function () {
+    if (window.__heroFxCleanup) window.__heroFxCleanup();
+    var cleanups = [];
+    window.__heroFxCleanup = function () {
+      cleanups.forEach(function (fn) { try { fn(); } catch (e) {} });
+      cleanups = [];
+    };
+
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* ---------- 粒子画布 ---------- */
+    function initParticles() {
+      var canvas = document.getElementById('hero-particles');
+      if (!canvas) return;
+      var hero = canvas.closest('section');
+      if (!hero) return;
+      var ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var W = 0, H = 0, parts = [], mouse = { x: -9999, y: -9999 };
+      var running = false, rafId = 0, visible = true, io = null;
+
+      // 从站点配色取陶土红，避免写死色值导致深色模式失调
+      var cs = getComputedStyle(document.documentElement);
+      var accent = (cs.getPropertyValue('--accent') || '#A84A28').trim();
+
+      function resize() {
+        var rect = hero.getBoundingClientRect();
+        W = rect.width; H = rect.height;
+        canvas.width = Math.max(1, W * dpr);
+        canvas.height = Math.max(1, H * dpr);
+        canvas.style.width = W + 'px';
+        canvas.style.height = H + 'px';
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        seed();
+      }
+
+      function seed() {
+        var count = W < 640 ? 28 : Math.min(85, Math.floor(W / 14));
+        parts = [];
+        for (var i = 0; i < count; i++) {
+          parts.push({
+            x: Math.random() * W,
+            y: Math.random() * H,
+            vx: (Math.random() - 0.5) * 0.35,
+            vy: (Math.random() - 0.5) * 0.35,
+            r: 1 + Math.random() * 1.8,
+            a: 0.25 + Math.random() * 0.45,
+          });
+        }
+      }
+
+      function hexToRgba(hex, alpha) {
+        var h = hex.replace('#', '');
+        if (h.length === 3) h = h.split('').map(function (c) { return c + c; }).join('');
+        var n = parseInt(h, 16);
+        return 'rgba(' + ((n >> 16) & 255) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + alpha + ')';
+      }
+
+      function draw() {
+        ctx.clearRect(0, 0, W, H);
+        var linkDist = 120, mouseDist = 170;
+        for (var i = 0; i < parts.length; i++) {
+          var p = parts[i];
+          var dx = mouse.x - p.x, dy = mouse.y - p.y;
+          var dm = Math.sqrt(dx * dx + dy * dy);
+          if (dm < mouseDist && dm > 0.01) {
+            p.x += (dx / dm) * 0.25;
+            p.y += (dy / dm) * 0.25;
+          }
+          p.x += p.vx; p.y += p.vy;
+          if (p.x < -10) p.x = W + 10; if (p.x > W + 10) p.x = -10;
+          if (p.y < -10) p.y = H + 10; if (p.y > H + 10) p.y = -10;
+
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = hexToRgba(accent, p.a);
+          ctx.fill();
+
+          for (var j = i + 1; j < parts.length; j++) {
+            var q = parts[j];
+            var ddx = p.x - q.x, ddy = p.y - q.y;
+            var d = Math.sqrt(ddx * ddx + ddy * ddy);
+            if (d < linkDist) {
+              ctx.beginPath();
+              ctx.moveTo(p.x, p.y);
+              ctx.lineTo(q.x, q.y);
+              ctx.strokeStyle = hexToRgba(accent, (1 - d / linkDist) * 0.16);
+              ctx.lineWidth = 1;
+              ctx.stroke();
+            }
+          }
+          if (dm < mouseDist) {
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.strokeStyle = hexToRgba(accent, (1 - dm / mouseDist) * 0.28);
+            ctx.lineWidth = 1;
+            ctx.stroke();
+          }
+        }
+      }
+
+      function loop() {
+        if (!running) return;
+        draw();
+        rafId = requestAnimationFrame(loop);
+      }
+
+      function start() {
+        if (running || reduceMotion) return;
+        running = true;
+        loop();
+      }
+
+      function stop() {
+        running = false;
+        cancelAnimationFrame(rafId);
+      }
+
+      function onPointerMove(e) {
+        var rect = hero.getBoundingClientRect();
+        mouse.x = e.clientX - rect.left;
+        mouse.y = e.clientY - rect.top;
+      }
+      function onPointerLeave() {
+        mouse.x = -9999; mouse.y = -9999;
+      }
+      hero.addEventListener('pointermove', onPointerMove);
+      hero.addEventListener('pointerleave', onPointerLeave);
+
+      var resizeTimer = 0;
+      function onResize() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(resize, 200);
+      }
+      window.addEventListener('resize', onResize);
+
+      function onVisibility() {
+        if (document.hidden) stop();
+        else if (visible) start();
+      }
+      document.addEventListener('visibilitychange', onVisibility);
+
+      if ('IntersectionObserver' in window) {
+        io = new IntersectionObserver(function (entries) {
+          visible = entries[0].isIntersecting;
+          if (visible) start(); else stop();
+        }, { threshold: 0 });
+        io.observe(hero);
+      }
+
+      cleanups.push(function () {
+        stop();
+        window.removeEventListener('resize', onResize);
+        document.removeEventListener('visibilitychange', onVisibility);
+        hero.removeEventListener('pointermove', onPointerMove);
+        hero.removeEventListener('pointerleave', onPointerLeave);
+        if (io) io.disconnect();
+      });
+
+      resize();
+      if (reduceMotion) draw(); // 减动效：只画一帧静态图
+      else start();
+    }
+
+    /* ---------- ZUO 水印视差 ---------- */
+    function initParallax() {
+      if (reduceMotion) return;
+      var wm = document.getElementById('hero-watermark');
+      if (!wm) return;
+      var ticking = false;
+      function update() {
+        ticking = false;
+        var y = window.scrollY || 0;
+        if (y < window.innerHeight) {
+          wm.style.transform = 'translateY(' + (y * 0.22).toFixed(1) + 'px)';
+        }
+      }
+      function onScroll() {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(update);
+        }
+      }
+      window.addEventListener('scroll', onScroll, { passive: true });
+      cleanups.push(function () {
+        window.removeEventListener('scroll', onScroll);
+      });
+    }
+
+    /* ---------- 数字滚动 ---------- */
+    function initCountUp() {
+      var els = Array.prototype.slice.call(document.querySelectorAll('[data-count]'));
+      if (!els.length) return;
+      function animate(el) {
+        var target = parseInt(el.getAttribute('data-count') || '0', 10);
+        if (reduceMotion) {
+          el.textContent = String(target);
+          return;
+        }
+        var start = null, dur = 1100;
+        function step(ts) {
+          if (!start) start = ts;
+          var t = Math.min((ts - start) / dur, 1);
+          var eased = 1 - Math.pow(1 - t, 3);
+          el.textContent = String(Math.round(target * eased));
+          if (t < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+      }
+      if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              animate(entry.target);
+              io.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.4 });
+        els.forEach(function (el) { io.observe(el); });
+        cleanups.push(function () { io.disconnect(); });
+      } else {
+        els.forEach(animate);
+      }
+    }
+
+    initParticles();
+    initParallax();
+    initCountUp();
+  })();
+</script>

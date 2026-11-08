@@ -98,6 +98,29 @@ pre.astro-code {
   transform: none;
 }
 
+/* Hero watermark: outlined ZUO (fill transparent, stroke only) */
+.hero-watermark {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--text-primary);
+  opacity: 0.1;
+}
+
+/* Tech marquee: seamless loop, pause on hover */
+.marquee-track {
+  animation: marquee-scroll 36s linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
 /* Text selection in accent tint */
 ::selection {
   background: var(--accent-soft);
@@ -109,6 +132,12 @@ pre.astro-code {
     opacity: 1;
     transform: none;
     transition: none;
+  }
+  .marquee-track {
+    animation: none;
+  }
+  .hero-watermark {
+    transform: none !important;
   }
   html {
     scroll-behavior: auto;
