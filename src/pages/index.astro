@@ -33,8 +33,8 @@ const formatDate = (date: Date) => {
 
 <Layout>
   <div>
-    <!-- Hero: 山水做满首屏背景，文案压在雾上 -->
-    <section class="bleed relative flex min-h-[calc(100svh-4rem)] flex-col justify-center">
+    <!-- Hero: 山水做满首屏背景，文案压在雾上；-mt 把 main 的顶部留白盖掉，画直接顶到导航栏下方 -->
+    <section class="bleed relative -mt-8 flex min-h-[calc(100svh-4rem)] flex-col justify-center sm:-mt-12">
       {/* 满幅山水背景 */}
       <div class="absolute inset-0" aria-hidden="true">
         <InkHero class="h-full w-full" />
