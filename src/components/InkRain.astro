@@ -1,0 +1,146 @@
+---
+/*
+ * InkRain — 墨雨：天上落下细长的墨色雨丝，落到下方水面荡起涟漪。
+ * 只在首页启用；系统设了「减弱动效」时不启用。
+ * 画布 fixed 全屏、pointer-events: none，不拦截任何点击。
+ * 切页是无刷新切换（ClientRouter），所以每次 astro:page-load 都重新初始化，
+ * 先清掉上一页留下的动画（与 InkTrail 同样的写法）。
+ */
+---
+
+<canvas id="ink-rain" class="pointer-events-none fixed inset-0 z-[6]" aria-hidden="true"></canvas>
+
+<script is:inline>
+  (function () {
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduceMotion) return;
+
+    function init() {
+      if (typeof window.__inkRainCleanup === 'function') {
+        window.__inkRainCleanup();
+        window.__inkRainCleanup = null;
+      }
+      var canvas = document.getElementById('ink-rain');
+      if (!canvas) return;
+      var ctx = canvas.getContext('2d');
+      if (!ctx) return;
+
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var W = 0, H = 0, waterY = 0;
+      function resize() {
+        W = window.innerWidth;
+        H = window.innerHeight;
+        canvas.width = W * dpr;
+        canvas.height = H * dpr;
+        canvas.style.width = W + 'px';
+        canvas.style.height = H + 'px';
+        // 水面：固定背景里湖面大致在 80% 屏高处
+        waterY = H * 0.8;
+      }
+      resize();
+      window.addEventListener('resize', resize);
+
+      // 墨色取自当前主题的正文色，深色模式下也看得见
+      var ink = '28,26,23';
+      try {
+        var raw = getComputedStyle(document.documentElement).getPropertyValue('--text-primary').trim();
+        var m = raw.match(/^#([0-9a-f]{6})$/i);
+        if (m) {
+          ink = parseInt(m[1].slice(0, 2), 16) + ',' + parseInt(m[1].slice(2, 4), 16) + ',' + parseInt(m[1].slice(4, 6), 16);
+        }
+      } catch (e) { /* 保持默认墨色 */ }
+
+      var drops = [];
+      var ripples = [];
+      var MAX_DROPS = 160;
+      var MAX_RIPPLES = 48;
+      var rafId = 0;
+      var lastTs = 0;
+
+      function spawnDrop() {
+        if (drops.length >= MAX_DROPS) return;
+        drops.push({
+          x: Math.random() * W,
+          y: -30 - Math.random() * 40,
+          len: 16 + Math.random() * 18,
+          speed: 520 + Math.random() * 340,
+          a: 0.22 + Math.random() * 0.2
+        });
+      }
+
+      function spawnRipple(x) {
+        if (ripples.length >= MAX_RIPPLES) ripples.shift();
+        ripples.push({ x: x, r: 2, max: 24 + Math.random() * 12, a: 0.4 });
+      }
+
+      function tick(ts) {
+        var dt = Math.min((ts - lastTs) / 1000 || 0.016, 0.05);
+        lastTs = ts;
+
+        // 每帧落 1~2 滴，细雨不断
+        spawnDrop();
+        if (Math.random() < 0.5) spawnDrop();
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.save();
+        ctx.scale(dpr, dpr);
+        ctx.lineWidth = 1;
+
+        for (var i = drops.length - 1; i >= 0; i--) {
+          var d = drops[i];
+          d.y += d.speed * dt;
+          d.x -= d.speed * dt * 0.03; // 微微斜落
+          if (d.y + d.len >= waterY) {
+            if (Math.random() < 0.35) spawnRipple(d.x);
+            drops.splice(i, 1);
+            continue;
+          }
+          ctx.strokeStyle = 'rgba(' + ink + ',' + d.a + ')';
+          ctx.beginPath();
+          ctx.moveTo(d.x, d.y);
+          ctx.lineTo(d.x - 2, d.y + d.len);
+          ctx.stroke();
+        }
+
+        for (var j = ripples.length - 1; j >= 0; j--) {
+          var r = ripples[j];
+          r.r += 34 * dt;             // 涟漪向外扩
+          r.a -= 0.36 * dt;           // 同时淡去
+          if (r.a <= 0.02 || r.r >= r.max) {
+            ripples.splice(j, 1);
+            continue;
+          }
+          ctx.strokeStyle = 'rgba(' + ink + ',' + r.a + ')';
+          ctx.beginPath();
+          ctx.ellipse(r.x, waterY, r.r, r.r * 0.3, 0, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        rafId = requestAnimationFrame(tick);
+      }
+
+      rafId = requestAnimationFrame(function (ts) {
+        lastTs = ts;
+        rafId = requestAnimationFrame(tick);
+      });
+
+      window.__inkRainCleanup = function () {
+        if (rafId) cancelAnimationFrame(rafId);
+        rafId = 0;
+        drops.length = 0;
+        ripples.length = 0;
+        window.removeEventListener('resize', resize);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      };
+    }
+
+    if (window.__inkRainWired) {
+      init();
+    } else {
+      window.__inkRainWired = true;
+      init();
+      document.addEventListener('astro:page-load', init);
+    }
+  })();
+</script>
