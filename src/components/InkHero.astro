@@ -2,7 +2,7 @@
 // 首屏满幅山水：竖构图湖山水墨画，用作 Hero 的整屏背景。
 // 上部是空天与薄雾（文案压在这里），中部是两层峰林，
 // 下部是湖面与湖心小船。纯墨色，无红日；山体用平滑曲线 +
-// 高斯模糊化入雾中，小船、水榭、飞鸟保持清晰。
+// 高斯模糊化入雾中，小船、飞鸟保持清晰。
 // 构图取 slice 安全带：小船与飞鸟集中在 x 355–845、y 280–650，
 // 16:9、21:9 与竖屏手机下都能完整呈现；小船特意抬高，短屏首屏也能看到整条船。
 interface Props {
@@ -71,16 +71,9 @@ const { class: className = '' } = Astro.props;
   <ellipse cx="430" cy="650" rx="110" ry="5" fill="var(--text-primary)" opacity="0.06" />
   <ellipse cx="740" cy="665" rx="140" ry="6" fill="var(--text-primary)" opacity="0.06" />
   <ellipse cx="980" cy="645" rx="90" ry="5" fill="var(--text-primary)" opacity="0.06" />
-  {/* 水榭（左岸小亭） */}
-  <g stroke="var(--text-primary)" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.55">
-    <path d="M182 628 L200 612 L218 628" />
-    <path d="M188 628 L188 642 M200 626 L200 642 M212 628 L212 642" />
-  </g>
-  {/* 湖心小船：船身 + 舱亭 + 倒影 */}
+  {/* 湖心小船：船身 + 倒影 */}
   <g fill="var(--text-primary)" opacity="0.75">
     <path d="M550 620 Q600 634 650 620 L644 612 L556 612 Z" />
-    <rect x="584" y="592" width="32" height="20" />
-    <path d="M578 593 Q600 576 622 593 Z" />
   </g>
   <path d="M562 644 Q600 654 638 644" stroke="var(--text-primary)" stroke-width="2.5" fill="none" opacity="0.12" />
   {/* 飞鸟 */}
