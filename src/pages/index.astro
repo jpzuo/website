@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import InkHero from '../components/InkHero.astro';
 import InkTrail from '../components/InkTrail.astro';
+import InkRain from '../components/InkRain.astro';
 import { getCollection } from 'astro:content';
 import { ArrowRight, ArrowUpRight } from '@lucide/astro';
 
@@ -33,18 +34,19 @@ const formatDate = (date: Date) => {
 
 <Layout>
   <div>
-    <!-- Hero: 山水做满首屏背景，文案压在雾上；-mt 把 main 的顶部留白盖掉，画直接顶到导航栏下方 -->
-    <section class="bleed relative -mt-8 flex min-h-[calc(100svh-4rem)] flex-col justify-center sm:-mt-12">
-      {/* 满幅山水背景 */}
-      <div class="absolute inset-0" aria-hidden="true">
-        <InkHero class="h-full w-full" />
-      </div>
+    {/* 水墨背景固定：整幅画 fixed 全屏，滚动时一直留在视野里，内容从上面滑过 */}
+    <div aria-hidden="true" class="pointer-events-none fixed inset-0 z-0">
+      <InkHero class="h-full w-full" />
       {/* 雾动：三层雾在山水上极缓慢地漂移，画是活的 */}
-      <div aria-hidden="true" class="pointer-events-none absolute inset-0 z-[5] overflow-hidden">
+      <div class="absolute inset-0 z-[5] overflow-hidden">
         <span class="mist mist-a"></span>
         <span class="mist mist-b"></span>
         <span class="mist mist-c"></span>
       </div>
+    </div>
+
+    <!-- Hero: 内容顶部对齐，整体往上挪；背景是上面那层固定的画 -->
+    <section class="bleed relative -mt-8 flex min-h-[calc(100svh-4rem)] flex-col justify-start sm:-mt-12">
       {/* 顶部淡纱，保证文案可读 */}
       <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 top-0 h-2/3 bg-gradient-to-b from-[var(--bg-page)]/80 via-[var(--bg-page)]/25 to-transparent"></div>
 
@@ -176,6 +178,9 @@ const formatDate = (date: Date) => {
 
   {/* 落墨：鼠标划过留淡墨痕 */}
   <InkTrail />
+
+  {/* 墨雨：细长雨丝落到水面荡起涟漪 */}
+  <InkRain />
 
   <style>
     .mist {
