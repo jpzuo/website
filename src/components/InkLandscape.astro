@@ -1,8 +1,8 @@
 ---
-// 湖山水墨：喀斯特峰林 + 云雾 + 湖面倒影 + 小船 + 水榭 + 飞鸟。
+// 湖山水墨：喀斯特峰林 + 云雾 + 湖面倒影 + 小船 + 飞鸟。
 // 按参考图（雾中山水、湖心小船）重绘，纯墨色，无红日。
 // 柔和处理：山体用平滑贝塞尔曲线 + 高斯模糊，边缘化入雾中，不再是硬折线多边形；
-// 小船、水榭、飞鸟保持清晰。构图取 slice 安全带：关键元素集中在
+// 小船、飞鸟保持清晰。构图取 slice 安全带：关键元素集中在
 // x 350–850、y 140–280，宽屏裁剪与窄屏居中裁剪下都能完整呈现。
 interface Props {
   class?: string;
@@ -70,16 +70,9 @@ const { class: className = '' } = Astro.props;
   <ellipse cx="450" cy="296" rx="90" ry="4" fill="var(--text-primary)" opacity="0.06" />
   <ellipse cx="720" cy="301" rx="120" ry="5" fill="var(--text-primary)" opacity="0.06" />
   <ellipse cx="960" cy="293" rx="80" ry="4" fill="var(--text-primary)" opacity="0.06" />
-  {/* 水榭（左岸小亭） */}
-  <g stroke="var(--text-primary)" stroke-width="2" fill="none" stroke-linecap="round" opacity="0.55">
-    <path d="M312 262 L330 250 L348 262" />
-    <path d="M318 262 L318 272 M330 260 L330 272 M342 262 L342 272" />
-  </g>
-  {/* 湖心小船：船身 + 舱亭 + 倒影 */}
+  {/* 湖心小船：船身 + 倒影 */}
   <g fill="var(--text-primary)" opacity="0.75">
     <path d="M570 268 Q600 278 630 268 L626 262 L574 262 Z" />
-    <rect x="588" y="250" width="24" height="12" />
-    <path d="M584 251 Q600 238 616 251 Z" />
   </g>
   <path d="M576 282 Q600 290 624 282" stroke="var(--text-primary)" stroke-width="2" fill="none" opacity="0.12" />
   {/* 飞鸟 */}
