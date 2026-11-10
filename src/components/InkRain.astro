@@ -52,8 +52,8 @@
 
       var drops = [];
       var ripples = [];
-      var MAX_DROPS = 18;
-      var MAX_RIPPLES = 12;
+      var MAX_DROPS = 36;
+      var MAX_RIPPLES = 24;
       var rafId = 0;
       var lastTs = 0;
 
@@ -70,15 +70,16 @@
 
       function spawnRipple(x) {
         if (ripples.length >= MAX_RIPPLES) ripples.shift();
-        ripples.push({ x: x, r: 2, max: 14 + Math.random() * 8, a: 0.3 });
+        // 一次落点：先溅水花，再起三圈涟漪
+        ripples.push({ x: x, t: 0, life: 1.25, max: 18 + Math.random() * 12 });
       }
 
       function tick(ts) {
         var dt = Math.min((ts - lastTs) / 1000 || 0.016, 0.05);
         lastTs = ts;
 
-        // 细雨：每秒约落 3 滴，同时在屏上只有三四滴
-        if (Math.random() < 0.05) spawnDrop();
+        // 细雨：每秒约落 6 滴（密度翻倍）
+        if (Math.random() < 0.1) spawnDrop();
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.save();
@@ -90,7 +91,7 @@
           d.y += d.speed * dt;
           d.x -= d.speed * dt * 0.03; // 微微斜落
           if (d.y + d.len >= waterY) {
-            if (Math.random() < 0.2) spawnRipple(d.x);
+            if (Math.random() < 0.5) spawnRipple(d.x);
             drops.splice(i, 1);
             continue;
           }
@@ -102,17 +103,42 @@
         }
 
         for (var j = ripples.length - 1; j >= 0; j--) {
-          var r = ripples[j];
-          r.r += 34 * dt;             // 涟漪向外扩
-          r.a -= 0.36 * dt;           // 同时淡去
-          if (r.a <= 0.02 || r.r >= r.max) {
+          var rp = ripples[j];
+          rp.t += dt;
+          var p = rp.t / rp.life;
+          if (p >= 1) {
             ripples.splice(j, 1);
             continue;
           }
-          ctx.strokeStyle = 'rgba(' + ink + ',' + r.a + ')';
-          ctx.beginPath();
-          ctx.ellipse(r.x, waterY, r.r, r.r * 0.3, 0, 0, Math.PI * 2);
-          ctx.stroke();
+          // 溅起的水花：落点处一瞬的小冠，0.25 秒内收起
+          if (rp.t < 0.25) {
+            var sp = rp.t / 0.25;
+            ctx.strokeStyle = 'rgba(' + ink + ',' + (0.5 * (1 - sp)) + ')';
+            ctx.beginPath();
+            ctx.ellipse(rp.x, waterY, 2 + 4 * sp, (2 + 4 * sp) * 0.7, 0, Math.PI, 0);
+            ctx.stroke();
+          }
+          // 三圈涟漪：外圈先起，内圈依次跟上；每圈都是越扩越慢（缓出），同时淡去
+          var rings = [
+            [0, 1, 0.42],
+            [0.14, 0.68, 0.32],
+            [0.28, 0.42, 0.22]
+          ];
+          for (var k = 0; k < rings.length; k++) {
+            var delay = rings[k][0];
+            var scale = rings[k][1];
+            var a0 = rings[k][2];
+            var lt = rp.t - delay;
+            if (lt < 0) continue;
+            var lp = lt / (rp.life - delay);
+            if (lp >= 1) continue;
+            var e = 1 - Math.pow(1 - lp, 3);
+            var rr = rp.max * scale * e;
+            ctx.strokeStyle = 'rgba(' + ink + ',' + (a0 * (1 - lp)) + ')';
+            ctx.beginPath();
+            ctx.ellipse(rp.x, waterY, rr, rr * 0.3, 0, 0, Math.PI * 2);
+            ctx.stroke();
+          }
         }
         ctx.restore();
 
