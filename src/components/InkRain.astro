@@ -52,8 +52,8 @@
 
       var drops = [];
       var ripples = [];
-      var MAX_DROPS = 60;
-      var MAX_RIPPLES = 24;
+      var MAX_DROPS = 18;
+      var MAX_RIPPLES = 12;
       var rafId = 0;
       var lastTs = 0;
 
@@ -62,23 +62,23 @@
         drops.push({
           x: Math.random() * W,
           y: -30 - Math.random() * 40,
-          len: 10 + Math.random() * 10,
+          len: 8 + Math.random() * 6,
           speed: 480 + Math.random() * 280,
-          a: 0.18 + Math.random() * 0.16
+          a: 0.14 + Math.random() * 0.12
         });
       }
 
       function spawnRipple(x) {
         if (ripples.length >= MAX_RIPPLES) ripples.shift();
-        ripples.push({ x: x, r: 2, max: 18 + Math.random() * 10, a: 0.35 });
+        ripples.push({ x: x, r: 2, max: 14 + Math.random() * 8, a: 0.3 });
       }
 
       function tick(ts) {
         var dt = Math.min((ts - lastTs) / 1000 || 0.016, 0.05);
         lastTs = ts;
 
-        // 细雨：平均约每两三帧落一滴
-        if (Math.random() < 0.4) spawnDrop();
+        // 细雨：每秒约落 3 滴，同时在屏上只有三四滴
+        if (Math.random() < 0.05) spawnDrop();
 
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         ctx.save();
@@ -90,7 +90,7 @@
           d.y += d.speed * dt;
           d.x -= d.speed * dt * 0.03; // 微微斜落
           if (d.y + d.len >= waterY) {
-            if (Math.random() < 0.25) spawnRipple(d.x);
+            if (Math.random() < 0.2) spawnRipple(d.x);
             drops.splice(i, 1);
             continue;
           }
