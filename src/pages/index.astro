@@ -45,8 +45,8 @@ const formatDate = (date: Date) => {
       </div>
     </div>
 
-    <!-- Hero: 首屏缩短到约 80svh，作品和手记提前出现；内容顶部对齐，背景是上面那层固定的画 -->
-    <section class="bleed relative -mt-8 flex min-h-[calc(80svh-4rem)] flex-col justify-start sm:-mt-12">
+    <!-- Hero: 内容顶部对齐，整体往上挪；背景是上面那层固定的画 -->
+    <section class="bleed relative -mt-8 flex min-h-[calc(100svh-4rem)] flex-col justify-start sm:-mt-12">
       {/* 顶部淡纱，保证文案可读 */}
       <div aria-hidden="true" class="pointer-events-none absolute inset-x-0 top-0 h-2/3 bg-gradient-to-b from-[var(--bg-page)]/80 via-[var(--bg-page)]/25 to-transparent"></div>
 
