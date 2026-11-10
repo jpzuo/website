@@ -26,7 +26,7 @@
       if (!ctx) return;
 
       var dpr = Math.min(window.devicePixelRatio || 1, 2);
-      var W = 0, H = 0, waterY = 0;
+      var W = 0, H = 0, lakeTop = 0, lakeH = 0;
       function resize() {
         W = window.innerWidth;
         H = window.innerHeight;
@@ -34,8 +34,13 @@
         canvas.height = H * dpr;
         canvas.style.width = W + 'px';
         canvas.style.height = H + 'px';
-        // 水面：固定背景里湖面大致在 80% 屏高处
-        waterY = H * 0.8;
+        // 水面：按固定背景里湖面的真实位置算，别猜。
+        // 画是 viewBox 1200x800、slice 裁切铺满全屏的，湖在画里 y 580-700。
+        var scale = Math.max(W / 1200, H / 800);
+        var y0 = (800 - H / scale) / 2;
+        lakeTop = (580 - y0) * scale;
+        var lakeBottom = Math.min((700 - y0) * scale, H);
+        lakeH = Math.max(lakeBottom - lakeTop, 40);
       }
       resize();
       window.addEventListener('resize', resize);
@@ -59,19 +64,23 @@
 
       function spawnDrop() {
         if (drops.length >= MAX_DROPS) return;
+        // 每滴雨落进湖面里不同的深处（近处、远处都有），不在一条线上
+        var targetY = lakeTop + lakeH * (0.15 + Math.random() * 0.7);
         drops.push({
           x: Math.random() * W,
           y: -30 - Math.random() * 40,
           len: 8 + Math.random() * 6,
           speed: 480 + Math.random() * 280,
-          a: 0.14 + Math.random() * 0.12
+          a: 0.14 + Math.random() * 0.12,
+          targetY: targetY,
+          depth: (targetY - lakeTop) / lakeH
         });
       }
 
-      function spawnRipple(x) {
+      function spawnRipple(x, y, depth) {
         if (ripples.length >= MAX_RIPPLES) ripples.shift();
-        // 一次落点：先溅水花，再起三圈涟漪
-        ripples.push({ x: x, t: 0, life: 1.25, max: 18 + Math.random() * 12 });
+        // 一次落点：先溅水花，再起三圈涟漪；近处涟漪大些，远处小些
+        ripples.push({ x: x, y: y, t: 0, life: 1.25, max: (18 + Math.random() * 12) * (0.7 + 0.5 * depth) });
       }
 
       function tick(ts) {
@@ -90,8 +99,8 @@
           var d = drops[i];
           d.y += d.speed * dt;
           d.x -= d.speed * dt * 0.03; // 微微斜落
-          if (d.y + d.len >= waterY) {
-            if (Math.random() < 0.5) spawnRipple(d.x);
+          if (d.y + d.len >= d.targetY) {
+            if (Math.random() < 0.5) spawnRipple(d.x, d.targetY, d.depth);
             drops.splice(i, 1);
             continue;
           }
@@ -115,7 +124,7 @@
             var sp = rp.t / 0.25;
             ctx.strokeStyle = 'rgba(' + ink + ',' + (0.5 * (1 - sp)) + ')';
             ctx.beginPath();
-            ctx.ellipse(rp.x, waterY, 2 + 4 * sp, (2 + 4 * sp) * 0.7, 0, Math.PI, 0);
+            ctx.ellipse(rp.x, rp.y, 2 + 4 * sp, (2 + 4 * sp) * 0.7, 0, Math.PI, 0);
             ctx.stroke();
           }
           // 三圈涟漪：外圈先起，内圈依次跟上；每圈都是越扩越慢（缓出），同时淡去
@@ -136,7 +145,7 @@
             var rr = rp.max * scale * e;
             ctx.strokeStyle = 'rgba(' + ink + ',' + (a0 * (1 - lp)) + ')';
             ctx.beginPath();
-            ctx.ellipse(rp.x, waterY, rr, rr * 0.3, 0, 0, Math.PI * 2);
+            ctx.ellipse(rp.x, rp.y, rr, rr * 0.3, 0, 0, Math.PI * 2);
             ctx.stroke();
           }
         }
